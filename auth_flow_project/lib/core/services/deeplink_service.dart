@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uni_links/uni_links.dart';
@@ -13,6 +14,9 @@ class DeepLinkService {
   final Ref _ref;
   StreamSubscription? _sub;
 
+  // A context is needed to show SnackBars. We can get it from the router.
+  BuildContext? get _context => _ref.read(routerProvider).routerDelegate.navigatorKey.currentContext;
+
   DeepLinkService(this._ref) {
     _init();
   }
@@ -23,19 +27,35 @@ class DeepLinkService {
         _handleUri(uri);
       }
     }, onError: (err) {
-      // Handle exception by warning the user their action did not succeed
+      if (_context != null) {
+        ScaffoldMessenger.of(_context!).showSnackBar(
+          SnackBar(content: Text('Failed to handle deep link: $err')),
+        );
+      }
     });
   }
 
-  void _handleUri(Uri uri) {
+  Future<void> _handleUri(Uri uri) async {
     if (uri.scheme == 'myapp' && uri.host == 'auth') {
       final path = uri.path;
       if (path == '/activate') {
         final token = uri.queryParameters['token'];
         if (token != null) {
-          _ref.read(authControllerProvider.notifier).activateAccount(token);
+          try {
+            await _ref.read(authControllerProvider.notifier).activateAccount(token);
+            if (_context != null) {
+              ScaffoldMessenger.of(_context!).showSnackBar(
+                const SnackBar(content: Text('Account activated successfully!')),
+              );
+            }
+          } catch (e) {
+             if (_context != null) {
+              ScaffoldMessenger.of(_context!).showSnackBar(
+                SnackBar(content: Text('Failed to activate account: $e')),
+              );
+            }
+          }
           _ref.read(routerProvider).go('/login');
-          // In a real app, you would show a success message
         }
       } else if (path == '/reset') {
         final token = uri.queryParameters['token'];

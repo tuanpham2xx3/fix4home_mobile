@@ -23,19 +23,29 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      // In a real app, you would call a method in AuthController to reset the password
-      // ref.read(authControllerProvider.notifier).resetPassword(widget.token, _passwordController.text);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password reset successfully!')),
-      );
-      context.go('/login');
+      ref.read(authControllerProvider.notifier).resetPassword(widget.token, _passwordController.text);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
+
+    ref.listen(authControllerProvider, (_, state) {
+      state.whenOrNull(
+        data: (_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Password reset successfully!')),
+          );
+          context.go('/login');
+        },
+        error: (error, stackTrace) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.toString())),
+          );
+        },
+      );
+    });
 
     return Scaffold(
       appBar: AppBar(title: const Text('Reset Password')),
