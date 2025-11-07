@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../features/auth/application/auth_controller.dart';
+import '../../features/auth/domain/auth_state.dart';
+import '../../features/auth/presentation/login_screen.dart';
+import '../../features/auth/presentation/register_screen.dart';
+import '../../features/auth/presentation/check_email_screen.dart';
+import '../../features/auth/presentation/reset_password_screen.dart';
+import '../../features/home/presentation/home_screen.dart';
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+  @override
+  Widget build(BuildContext context) => const Scaffold(body: Center(child: CircularProgressIndicator()));
+}
+
+
+final routerProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authControllerProvider);
+
+  return GoRouter(
+    initialLocation: '/login',
+    routes: [
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/check-email',
+        builder: (context, state) => const CheckEmailScreen(),
+      ),
+      GoRoute(
+        path: '/reset-password',
+        builder: (context, state) {
+          final token = state.uri.queryParameters['token'] ?? '';
+          return ResetPasswordScreen(token: token);
+        },
+      ),
+      GoRoute(
+        path: '/home',
+        builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
+    ],
+    redirect: (BuildContext context, GoRouterState state) {
+      final loggingIn = state.matchedLocation == '/login';
+      final registering = state.matchedLocation == '/register';
+      final checkingEmail = state.matchedLocation == '/check-email';
+      final resettingPassword = state.matchedLocation.startsWith('/reset-password');
+
+      return authState.when(
+        data: (authStateValue) {
+          final loggedIn = authStateValue is Authenticated;
+          final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword;
+
+          if (!loggedIn && !isPublicPage) {
+            return '/login';
+          }
+
+          if (loggedIn && (loggingIn || registering)) {
+            return '/home';
+          }
+
+          return null;
+        },
+        loading: () => '/splash',
+        error: (_, __) => '/login',
+      );
+    },
+  );
+});
