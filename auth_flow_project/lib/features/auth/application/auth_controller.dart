@@ -55,4 +55,20 @@ class AuthController extends AsyncNotifier<AuthState> {
       return const AuthState.unauthenticated(); // Stay on login screen
     });
   }
+
+  Future<void> forgotPassword(String email) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await _authRepository.forgotPassword(email: email);
+      return const AuthState.unauthenticated();
+    });
+  }
+
+  Future<void> resetPassword(String token, String newPassword) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await _authRepository.resetPassword(token: token, newPassword: newPassword);
+      return const AuthState.unauthenticated();
+    });
+  }
 }

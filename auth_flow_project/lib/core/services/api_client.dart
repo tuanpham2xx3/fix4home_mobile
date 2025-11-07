@@ -12,7 +12,7 @@ final dioProvider = Provider<Dio>((ref) {
     baseUrl: 'https://api.example.com', // This will be replaced by dotenv
   ));
 
-  dio.interceptors.add(AuthInterceptor(ref));
+  dio.interceptors.add(AuthInterceptor(ref, dio));
 
   if (kDebugMode) {
     dio.interceptors.add(PrettyDioLogger(
@@ -29,11 +29,11 @@ final dioProvider = Provider<Dio>((ref) {
   return dio;
 });
 
-
 class AuthInterceptor extends Interceptor {
   final Ref _ref;
+  final Dio _dio;
 
-  AuthInterceptor(this._ref);
+  AuthInterceptor(this._ref, this._dio);
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
@@ -55,23 +55,25 @@ class AuthInterceptor extends Interceptor {
         return handler.next(err);
       }
 
+      _dio.lock();
       try {
         final newAccessToken = await authRepository.refreshToken(refreshToken: oldTokens.refreshToken);
         final newTokens = oldTokens.copyWith(accessToken: newAccessToken);
         await tokenStorageService.saveTokens(newTokens);
 
+        _dio.unlock();
+
         // Retry the original request with the new token
         final options = err.requestOptions;
         options.headers['Authorization'] = 'Bearer $newAccessToken';
 
-        // Use ref.container.read to lazily get the dioProvider and avoid circular dependencies
-        final dio = _ref.container.read(dioProvider);
-        final response = await dio.fetch(options);
+        final response = await _dio.fetch(options);
         return handler.resolve(response);
 
       } catch (e) {
         // If refresh token fails, logout the user
         _ref.read(authControllerProvider.notifier).logout();
+        _dio.unlock();
         return handler.next(err);
       }
     }
