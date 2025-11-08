@@ -54,22 +54,26 @@ class AuthInterceptor extends Interceptor {
         return handler.next(err);
       }
 
+      _dio.lock();
       try {
         final newAccessToken = await authRepository.refreshToken(refreshToken: oldTokens.refreshToken);
         final newTokens = oldTokens.copyWith(accessToken: newAccessToken);
         await tokenStorageService.saveTokens(newTokens);
+
+        _dio.unlock();
 
         // Retry the original request with the new token
         final options = err.requestOptions;
         options.headers['Authorization'] = 'Bearer $newAccessToken';
 
         final response = await _dio.fetch(options);
-        handler.resolve(response);
+        return handler.resolve(response);
 
       } catch (e) {
         // If refresh token fails, logout the user
         _ref.read(authControllerProvider.notifier).logout();
-        handler.next(err);
+        _dio.unlock();
+        return handler.next(err);
       }
     } else {
       handler.next(err);

@@ -23,7 +23,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       ref.read(authControllerProvider.notifier).forgotPassword(_emailController.text);
-      GoRouter.of(context).go('/check-email');
+      context.go('/check-email');
     }
   }
 

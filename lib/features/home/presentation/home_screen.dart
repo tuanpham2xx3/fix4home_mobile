@@ -120,7 +120,7 @@ class HomeScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Đặt dịch vụ ngay',
+            'Đặt dịch vụ ngayyyyy',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
