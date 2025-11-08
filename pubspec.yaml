@@ -12,13 +12,16 @@ dependencies:
 
   # Core
   flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.6 # Added for @Riverpod annotation
+  riverpod_annotation: ^2.3.6
   go_router: ^14.2.0
   dio: ^5.5.0
   pretty_dio_logger: ^1.3.1
+  app_links: ^6.3.2
+  flutter_secure_storage: ^9.0.0
   
   # Models & JSON
   freezed_annotation: ^2.4.1
+  json_annotation: ^4.9.0 # Added for json_serializable
   equatable: ^2.0.5
 
   cupertino_icons: ^1.0.8
@@ -29,7 +32,7 @@ dev_dependencies:
   
   # Code Generation
   build_runner: ^2.4.11
-  riverpod_generator: ^2.3.9 # Added for generating Riverpod providers
+  riverpod_generator: ^2.3.9
   freezed: ^2.5.2
   json_serializable: ^6.8.0
 

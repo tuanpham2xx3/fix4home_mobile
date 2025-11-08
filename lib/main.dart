@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'app/router.dart'; // Import the router
+import 'app/main.dart';
 
-void main() {
-  // Wrap the entire app with ProviderScope for Riverpod
-  runApp(const ProviderScope(child: MyApp()));
-}
-
-class MyApp extends ConsumerWidget { // Use ConsumerWidget for Riverpod
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Get the GoRouter instance from the provider
-    final goRouter = ref.watch(routerProvider);
-
-    return MaterialApp.router(
-      title: 'Fix4Home',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      routerConfig: goRouter, // Use routerConfig for GoRouter
-      debugShowCheckedModeBanner: false, // Typically disable for production builds
-    );
-  }
+void main() async {
+  // Ensure Flutter binding is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Set preferred orientations
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  
+  // Set system UI overlay style
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.white,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ),
+  );
+  
+  // Run the app with ProviderScope for Riverpod state management
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
