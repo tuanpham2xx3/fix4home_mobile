@@ -1,11 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import '../../../domain/repositories/auth_repository.dart';
 import '../domain/auth_state.dart';
-import '../../../data/repositories/mock_auth_repository.dart';
+import '../../../data/repositories/api_auth_repository.dart';
 import '../../../domain/models/user.dart';
+import '../../../core/services/token_storage_service.dart';
+import '../../../core/services/api_client.dart';
+import '../../../core/services/device_id_service.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return MockAuthRepository();
+  return ApiAuthRepository(
+    ref.watch(dioProvider),
+    ref.watch(deviceIdServiceProvider),
+    ref.watch(tokenStorageServiceProvider),
+  );
 });
 
 final authControllerProvider =
@@ -15,24 +23,88 @@ final authControllerProvider =
 
 class AuthController extends AsyncNotifier<AuthState> {
   late final AuthRepository _authRepository;
+  late final TokenStorageService _tokenStorageService;
 
   @override
   Future<AuthState> build() async {
     _authRepository = ref.watch(authRepositoryProvider);
-    // Auto-login with mock data for development
-    return AuthState.authenticated(
-      user: User(
-        id: 'mock_user_1',
-        name: 'Thợ Việt',
-        email: 'thoviet@fix4home.com',
-      ),
-    );
+    _tokenStorageService = ref.watch(tokenStorageServiceProvider);
+    
+    // Check if we have stored tokens
+    final tokens = await _tokenStorageService.getTokens();
+    if (tokens != null && tokens.accessToken.isNotEmpty) {
+      try {
+        // Try to decode user info from JWT token
+        if (JwtDecoder.isExpired(tokens.accessToken)) {
+          // Token is expired, try to refresh
+          if (tokens.refreshToken.isNotEmpty) {
+            try {
+              final newAccessToken = await _authRepository.refreshToken(
+                refreshToken: tokens.refreshToken,
+              );
+              // Retry decoding with new token
+              return _decodeUserFromToken(newAccessToken);
+            } catch (e) {
+              // Refresh failed, clear tokens and return unauthenticated
+              await _tokenStorageService.clearTokens();
+              return const AuthState.unauthenticated();
+            }
+          } else {
+            // No refresh token, clear and return unauthenticated
+            await _tokenStorageService.clearTokens();
+            return const AuthState.unauthenticated();
+          }
+        } else {
+          // Token is valid, decode user info
+          return _decodeUserFromToken(tokens.accessToken);
+        }
+      } catch (e) {
+        // If decoding fails, clear tokens and return unauthenticated
+        await _tokenStorageService.clearTokens();
+        return const AuthState.unauthenticated();
+      }
+    }
+    
+    // No tokens found, return unauthenticated
+    return const AuthState.unauthenticated();
+  }
+
+  AuthState _decodeUserFromToken(String accessToken) {
+    try {
+      final decodedToken = JwtDecoder.decode(accessToken);
+      
+      // Extract user info from token payload
+      // Adjust these keys based on your JWT token structure
+      final userId = decodedToken['sub'] ?? 
+                     decodedToken['userId'] ?? 
+                     decodedToken['id'] ?? 
+                     '';
+      final userEmail = decodedToken['email'] ?? '';
+      final userName = decodedToken['name'] ?? 
+                      decodedToken['fullName'] ?? 
+                      decodedToken['username'] ?? 
+                      userEmail;
+      
+      if (userId.isNotEmpty && userEmail.isNotEmpty) {
+        return AuthState.authenticated(
+          user: User(
+            id: userId.toString(),
+            name: userName.toString(),
+            email: userEmail.toString(),
+          ),
+        );
+      }
+    } catch (e) {
+      // If decoding fails, return unauthenticated
+    }
+    return const AuthState.unauthenticated();
   }
 
   Future<void> login(String email, String password) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final (user, _) = await _authRepository.login(email: email, password: password);
+      final (user, tokens) = await _authRepository.login(email: email, password: password);
+      // Tokens are already saved in ApiAuthRepository
       return AuthState.authenticated(user: user);
     });
   }
@@ -40,8 +112,13 @@ class AuthController extends AsyncNotifier<AuthState> {
   Future<void> register(String name, String email, String password) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-       await _authRepository.register(name: name, email: email, password: password);
-      // After registration, the user needs to activate the account,
+      final (user, tokens) = await _authRepository.register(
+        name: name,
+        email: email,
+        password: password,
+      );
+      // Tokens are already saved in ApiAuthRepository
+      // After registration, the user needs to verify email,
       // so we don't log them in immediately.
       return const AuthState.unauthenticated();
     });
@@ -50,7 +127,8 @@ class AuthController extends AsyncNotifier<AuthState> {
   Future<void> logout() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      // In a real app, you'd clear stored tokens here
+      // Clear stored tokens
+      await _tokenStorageService.clearTokens();
       return const AuthState.unauthenticated();
     });
   }
@@ -76,6 +154,15 @@ class AuthController extends AsyncNotifier<AuthState> {
     state = await AsyncValue.guard(() async {
       await _authRepository.resetPassword(token: token, newPassword: newPassword);
       return const AuthState.unauthenticated();
+    });
+  }
+
+  Future<void> googleSignIn(String idToken) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final (user, tokens) = await _authRepository.googleSignIn(idToken: idToken);
+      // Tokens are already saved in ApiAuthRepository
+      return AuthState.authenticated(user: user);
     });
   }
 }

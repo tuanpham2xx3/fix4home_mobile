@@ -27,10 +27,24 @@ class TokenStorageService {
     final accessToken = await _storage.read(key: _accessTokenKey);
     final refreshToken = await _storage.read(key: _refreshTokenKey);
 
-    if (accessToken != null && refreshToken != null) {
-      return Tokens(accessToken: accessToken, refreshToken: refreshToken);
+    if (accessToken != null) {
+      // If we have refreshToken, use it; otherwise use empty string (for web)
+      return Tokens(
+        accessToken: accessToken,
+        refreshToken: refreshToken ?? '',
+      );
     }
     return null;
+  }
+  
+  Future<void> saveAccessToken(String accessToken) async {
+    await _storage.write(key: _accessTokenKey, value: accessToken);
+  }
+  
+  Future<void> saveRefreshToken(String? refreshToken) async {
+    if (refreshToken != null && refreshToken.isNotEmpty) {
+      await _storage.write(key: _refreshTokenKey, value: refreshToken);
+    }
   }
 
   Future<void> clearTokens() async {
