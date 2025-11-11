@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../domain/models/user.dart';
 import '../../domain/models/tokens.dart';
-import '../../domain/models/register_request.dart';
 import '../../domain/models/login_request.dart';
 import '../../domain/models/auth_response.dart';
 import '../../domain/models/refresh_token_response.dart';
@@ -35,14 +34,6 @@ class ApiAuthRepository implements AuthRepository {
     return headers;
   }
 
-  // Helper method to normalize empty strings to null
-  String? _normalizeString(String? value) {
-    if (value == null || value.isEmpty) {
-      return null;
-    }
-    return value;
-  }
-
   @override
   Future<(User, Tokens)> register({
     required String name,
@@ -52,16 +43,17 @@ class ApiAuthRepository implements AuthRepository {
     try {
       final headers = await _getHeaders();
       
-      final request = RegisterRequest(
-        email: email,
-        password: password,
-        role: 'CUSTOMER',
-        fullName: _normalizeString(name),
-      );
+      // Chỉ gửi các trường cần thiết cho CUSTOMER registration
+      // Backend sẽ tự tạo username, không cần fullName và phoneNumber
+      final requestData = <String, dynamic>{
+        'email': email,
+        'password': password,
+        'role': 'CUSTOMER',
+      };
 
       final response = await _dio.post(
         ApiConfig.registerEndpoint,
-        data: request.toJson(),
+        data: requestData,
         options: Options(headers: headers),
       );
 
