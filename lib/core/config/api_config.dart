@@ -1,6 +1,9 @@
 class ApiConfig {
-  // TODO: Replace with actual API base URL
-  // You can use environment variables or different URLs for dev/prod
+  // API base URL configuration
+  // - For Android Emulator: use 'http://10.0.2.2:8100' (maps to host's localhost)
+  // - For iOS Simulator: use 'http://localhost:8100'
+  // - For Physical Device: use 'http://<YOUR_COMPUTER_IP>:8100' (e.g., 'http://192.168.1.100:8100')
+  // - For Production: use your production server URL
   static const String baseUrl = 'http://10.0.2.2:8100';
   
   // API endpoints

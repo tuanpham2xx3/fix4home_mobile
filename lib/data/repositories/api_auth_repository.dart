@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../domain/models/user.dart';
 import '../../domain/models/tokens.dart';
-import '../../domain/models/login_request.dart';
 import '../../domain/models/auth_response.dart';
 import '../../domain/models/refresh_token_response.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -34,6 +33,36 @@ class ApiAuthRepository implements AuthRepository {
     return headers;
   }
 
+  // Helper method to parse backend response with { success, message, data } structure
+  AuthResponse _parseAuthResponse(Map<String, dynamic> responseData) {
+    // Kiểm tra success
+    if (responseData['success'] != true) {
+      final message = responseData['message'] ?? 
+                     responseData['userMessage'] ?? 
+                     'Request failed';
+      throw Exception(message);
+    }
+    
+    // Lấy data object
+    if (responseData['data'] == null) {
+      throw Exception('Response data is null');
+    }
+    
+    final data = responseData['data'] as Map<String, dynamic>;
+    
+    // Map từ data sang AuthResponse structure
+    return AuthResponse(
+      accessToken: data['accessToken'] as String,
+      refreshToken: data['refreshToken'] as String?,
+      user: User(
+        id: data['userId'].toString(), // Convert userId (number) to String
+        name: data['username'] as String, // username từ backend
+        email: data['email'] as String,
+      ),
+      status: data['status'] as String,
+    );
+  }
+
   @override
   Future<(User, Tokens)> register({
     required String name,
@@ -57,7 +86,9 @@ class ApiAuthRepository implements AuthRepository {
         options: Options(headers: headers),
       );
 
-      final authResponse = AuthResponse.fromJson(response.data);
+      // Backend trả về { success, message, data }
+      final responseData = response.data as Map<String, dynamic>;
+      final authResponse = _parseAuthResponse(responseData);
       
       // Save tokens if available
       if (authResponse.refreshToken != null && authResponse.refreshToken!.isNotEmpty) {
@@ -94,18 +125,21 @@ class ApiAuthRepository implements AuthRepository {
     try {
       final headers = await _getHeaders();
       
-      final request = LoginRequest(
-        email: email,
-        password: password,
-      );
+      // Backend yêu cầu field name là 'usernameOrEmail' thay vì 'email'
+      final requestData = <String, dynamic>{
+        'usernameOrEmail': email, // Email được dùng làm usernameOrEmail
+        'password': password,
+      };
 
       final response = await _dio.post(
         ApiConfig.loginEndpoint,
-        data: request.toJson(),
+        data: requestData,
         options: Options(headers: headers),
       );
 
-      final authResponse = AuthResponse.fromJson(response.data);
+      // Backend trả về { success, message, data }
+      final responseData = response.data as Map<String, dynamic>;
+      final authResponse = _parseAuthResponse(responseData);
       
       // Save tokens if available
       if (authResponse.refreshToken != null && authResponse.refreshToken!.isNotEmpty) {
@@ -214,7 +248,9 @@ class ApiAuthRepository implements AuthRepository {
       
       if (data is Map<String, dynamic>) {
         // Try to extract error message from response
-        message = data['message'] ?? 
+        // Ưu tiên userMessage vì nó thân thiện với người dùng hơn
+        message = data['userMessage'] ?? 
+                 data['message'] ?? 
                  data['error'] ?? 
                  data['errorMessage'] ?? 
                  message;

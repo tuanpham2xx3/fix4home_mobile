@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../application/auth_controller.dart';
+import '../../../core/widgets/loading_button.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -30,6 +31,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
+    final isLoading = authState.isLoading;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Forgot Password')),
@@ -45,12 +47,11 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 validator: (value) => (value?.isEmpty ?? true) ? 'Please enter your email' : null,
               ),
               const SizedBox(height: 20),
-              authState.isLoading
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: _submit,
-                      child: const Text('Send Reset Link'),
-                    ),
+              LoadingButton(
+                text: 'Send Reset Link',
+                onPressed: _submit,
+                isLoading: isLoading,
+              ),
             ],
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../application/auth_controller.dart';
+import '../../../core/widgets/loading_button.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {
   final String token;
@@ -30,6 +31,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
+    final isLoading = authState.isLoading;
 
     ref.listen(authControllerProvider, (_, state) {
       state.whenOrNull(
@@ -70,12 +72,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              authState.isLoading
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: _submit,
-                      child: const Text('Reset Password'),
-                    ),
+              LoadingButton(
+                text: 'Reset Password',
+                onPressed: _submit,
+                isLoading: isLoading,
+              ),
             ],
           ),
         ),
