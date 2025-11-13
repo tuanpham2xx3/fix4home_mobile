@@ -42,19 +42,26 @@ class DeepLinkService {
         if (token != null) {
           try {
             await _ref.read(authControllerProvider.notifier).activateAccount(token);
-            if (_context != null) {
-              ScaffoldMessenger.of(_context!).showSnackBar(
-                const SnackBar(content: Text('Account activated successfully!')),
-              );
-            }
+            // After successful activation, navigate to congratulations screen
+            _ref.read(routerProvider).go('/congratulations');
           } catch (e) {
-             if (_context != null) {
+            if (_context != null) {
+              String errorMessage = 'Không thể kích hoạt tài khoản';
+              if (e is Exception) {
+                errorMessage = e.toString().replaceFirst('Exception: ', '');
+              } else {
+                errorMessage = e.toString();
+              }
               ScaffoldMessenger.of(_context!).showSnackBar(
-                SnackBar(content: Text('Failed to activate account: $e')),
+                SnackBar(
+                  content: Text(errorMessage),
+                  backgroundColor: Colors.red,
+                ),
               );
             }
+            // On error, go to login screen
+            _ref.read(routerProvider).go('/login');
           }
-          _ref.read(routerProvider).go('/login');
         }
       } else if (path == '/reset') {
         final token = uri.queryParameters['token'];

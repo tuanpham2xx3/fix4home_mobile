@@ -1,5 +1,6 @@
 import '../../domain/models/tokens.dart';
 import '../../domain/models/user.dart';
+import '../../domain/models/verify_activation_token_response.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 class MockAuthRepository implements AuthRepository {
@@ -60,6 +61,22 @@ class MockAuthRepository implements AuthRepository {
   @override
   Future<void> resendActivation({required String email}) async {
     await Future.delayed(const Duration(seconds: 1));
+  }
+
+  @override
+  Future<VerifyActivationTokenResponse> verifyActivationToken({
+    required String token,
+  }) async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (token == 'invalid_token') {
+      throw Exception('Invalid activation token');
+    }
+    return const VerifyActivationTokenResponse(
+      email: 'test@example.com',
+      action: 'activate',
+      userId: '1',
+      userStatus: 'ACTIVE',
+    );
   }
 
   @override

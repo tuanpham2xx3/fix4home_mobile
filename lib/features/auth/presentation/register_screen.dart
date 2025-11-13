@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../application/auth_controller.dart';
 import '../../../core/widgets/loading_button.dart';
+import 'widgets/email_verification_modal.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -43,12 +44,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
 
-    ref.listen(authControllerProvider, (_, state) {
-      state.whenOrNull(
+    ref.listen(authControllerProvider, (previous, next) {
+      next.whenOrNull(
         data: (authStateValue) {
           authStateValue.whenOrNull(
             unauthenticated: () {
-              if (mounted) context.go('/check-email');
+              // Check if we just finished registration (previous was loading)
+              if (mounted && previous?.isLoading == true) {
+                // Show email verification modal instead of navigating
+                EmailVerificationModal.show(
+                  context,
+                  _emailController.text.trim(),
+                );
+              }
             },
           );
         },

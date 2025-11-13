@@ -6,6 +6,7 @@ import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/auth/presentation/check_email_screen.dart';
 import '../../features/auth/presentation/reset_password_screen.dart';
+import '../../features/auth/presentation/congratulations_screen.dart';
 import '../../features/home/presentation/main_navigation.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -41,6 +42,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
+        path: '/congratulations',
+        builder: (context, state) => const CongratulationsScreen(),
+      ),
+      GoRoute(
         path: '/home',
         builder: (context, state) => const MainNavigation(),
       ),
@@ -54,6 +59,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final registering = state.matchedLocation == '/register';
       final checkingEmail = state.matchedLocation == '/check-email';
       final resettingPassword = state.matchedLocation.startsWith('/reset-password');
+      final congratulations = state.matchedLocation == '/congratulations';
 
       return authState.when(
         data: (authStateValue) {
@@ -64,7 +70,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             unauthenticated: () => false,
             error: (_) => false,
           );
-          final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword;
+          final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword || congratulations;
 
           if (!loggedIn && !isPublicPage) {
             return '/login';

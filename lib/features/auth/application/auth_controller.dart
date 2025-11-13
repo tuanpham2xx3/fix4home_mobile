@@ -4,6 +4,7 @@ import '../../../domain/repositories/auth_repository.dart';
 import '../domain/auth_state.dart';
 import '../../../data/repositories/api_auth_repository.dart';
 import '../../../domain/models/user.dart';
+import '../../../domain/models/verify_activation_token_response.dart';
 import '../../../core/services/token_storage_service.dart';
 import '../../../core/services/api_client.dart';
 import '../../../core/services/device_id_service.dart';
@@ -112,7 +113,7 @@ class AuthController extends AsyncNotifier<AuthState> {
   Future<void> register(String name, String email, String password) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final (user, tokens) = await _authRepository.register(
+      await _authRepository.register(
         name: name,
         email: email,
         password: password,
@@ -137,8 +138,18 @@ class AuthController extends AsyncNotifier<AuthState> {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await _authRepository.activateAccount(token: token);
-      return const AuthState.unauthenticated(); // Stay on login screen
+      // After successful activation, stay unauthenticated
+      // The UI will handle navigation to congratulations screen
+      return const AuthState.unauthenticated();
     });
+  }
+
+  Future<VerifyActivationTokenResponse> verifyActivationToken(String token) async {
+    return await _authRepository.verifyActivationToken(token: token);
+  }
+
+  Future<void> resendActivationLink(String email) async {
+    await _authRepository.resendActivation(email: email);
   }
 
   Future<void> forgotPassword(String email) async {

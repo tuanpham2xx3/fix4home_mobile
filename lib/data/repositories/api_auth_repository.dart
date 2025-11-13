@@ -3,6 +3,8 @@ import '../../domain/models/user.dart';
 import '../../domain/models/tokens.dart';
 import '../../domain/models/auth_response.dart';
 import '../../domain/models/refresh_token_response.dart';
+import '../../domain/models/verify_activation_token_response.dart';
+import '../../domain/models/send_verification_email_request.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../core/config/api_config.dart';
 import '../../core/services/device_id_service.dart';
@@ -209,16 +211,115 @@ class ApiAuthRepository implements AuthRepository {
   Future<void> activateAccount({
     required String token,
   }) async {
-    // TODO: Implement when backend endpoint is available
-    throw UnimplementedError('Kích hoạt tài khoản chưa được hỗ trợ');
+    try {
+      final headers = await _getHeaders();
+      
+      final response = await _dio.get(
+        '${ApiConfig.activateEndpoint}/$token',
+        options: Options(headers: headers),
+      );
+
+      // Backend trả về { success, message, data }
+      final responseData = response.data as Map<String, dynamic>;
+      
+      if (responseData['success'] != true) {
+        final message = responseData['message'] ?? 
+                       responseData['userMessage'] ?? 
+                       'Kích hoạt tài khoản thất bại';
+        throw Exception(message);
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('Kích hoạt tài khoản thất bại: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<VerifyActivationTokenResponse> verifyActivationToken({
+    required String token,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      
+      final response = await _dio.post(
+        ApiConfig.verifyActivationTokenEndpoint,
+        data: {'token': token},
+        options: Options(headers: headers),
+      );
+
+      // Backend trả về { success, message, data }
+      final responseData = response.data as Map<String, dynamic>;
+      
+      if (responseData['success'] != true) {
+        final message = responseData['message'] ?? 
+                       responseData['userMessage'] ?? 
+                       'Token không hợp lệ';
+        throw Exception(message);
+      }
+      
+      // Lấy data object
+      if (responseData['data'] == null) {
+        throw Exception('Response data is null');
+      }
+      
+      final data = responseData['data'] as Map<String, dynamic>;
+      
+      return VerifyActivationTokenResponse(
+        email: data['email'] as String,
+        action: data['action'] as String,
+        userId: data['userId'].toString(),
+        userStatus: data['userStatus'] as String,
+      );
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('Kiểm tra token thất bại: ${e.toString()}');
+    }
   }
 
   @override
   Future<void> resendActivation({
     required String email,
   }) async {
-    // TODO: Implement when backend endpoint is available
-    throw UnimplementedError('Gửi lại email kích hoạt chưa được hỗ trợ');
+    try {
+      final headers = await _getHeaders();
+      
+      final request = SendVerificationEmailRequest(email: email);
+      
+      final response = await _dio.post(
+        ApiConfig.resendActivationLinkEndpoint,
+        data: request.toJson(),
+        options: Options(headers: headers),
+      );
+
+      // Backend trả về { success, message, data }
+      final responseData = response.data as Map<String, dynamic>;
+      
+      if (responseData['success'] != true) {
+        final message = responseData['message'] ?? 
+                       responseData['userMessage'] ?? 
+                       'Gửi lại email thất bại';
+        throw Exception(message);
+      }
+    } on DioException catch (e) {
+      // Handle rate-limit errors specifically
+      if (e.response?.statusCode == 429) {
+        throw Exception('Bạn đã gửi quá nhiều yêu cầu. Vui lòng đợi một lúc trước khi thử lại');
+      }
+      throw _handleDioError(e);
+    } catch (e) {
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('Gửi lại email kích hoạt thất bại: ${e.toString()}');
+    }
   }
 
   @override

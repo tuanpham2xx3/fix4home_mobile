@@ -1,5 +1,6 @@
 import '../models/user.dart';
 import '../models/tokens.dart';
+import '../models/verify_activation_token_response.dart';
 
 abstract class AuthRepository {
   Future<(User, Tokens)> register({
@@ -18,6 +19,10 @@ abstract class AuthRepository {
   });
 
   Future<void> activateAccount({
+    required String token,
+  });
+
+  Future<VerifyActivationTokenResponse> verifyActivationToken({
     required String token,
   });
 

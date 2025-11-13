@@ -10,5 +10,8 @@ class ApiConfig {
   static const String registerEndpoint = '/api/v1/auth/register';
   static const String loginEndpoint = '/api/v1/auth/login';
   static const String refreshTokenEndpoint = '/api/v1/auth/refresh';
+  static const String activateEndpoint = '/api/v1/auth/activate'; // /{token}
+  static const String verifyActivationTokenEndpoint = '/api/v1/auth/verify-activation-token';
+  static const String resendActivationLinkEndpoint = '/api/v1/auth/resend-activation-link';
 }
 
