@@ -1,11 +1,111 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  
+  // PageControllers for carousels
+  late PageController _promoPageController;
+  late PageController _servicesPageController;
+  late PageController _articlesPageController;
+  
+  // Timers for auto-scrolling
+  Timer? _promoTimer;
+  Timer? _servicesTimer;
+  Timer? _articlesTimer;
+  
+  // Current page indices
+  int _promoCurrentPage = 0;
+  int _servicesCurrentPage = 0;
+  int _articlesCurrentPage = 0;
+  
+  // Banner lists
+  final List<String> _banners = [
+    'assets/banners/co_khi.png',
+    'assets/banners/dien_nuoc.png',
+    'assets/banners/do_nuoc.png',
+    'assets/banners/noi_that.png',
+    'assets/banners/van_chuyen.png',
+    'assets/banners/ve_sinh.png',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _promoPageController = PageController(viewportFraction: 0.8, initialPage: 0);
+    _servicesPageController = PageController(viewportFraction: 0.8, initialPage: 0);
+    _articlesPageController = PageController(viewportFraction: 0.8, initialPage: 0);
+    
+    _startAutoScroll();
+  }
+
+  void _startAutoScroll() {
+    // Auto-scroll for promotional section
+    _promoTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (_promoPageController.hasClients) {
+        _promoCurrentPage = (_promoCurrentPage + 1) % _banners.length;
+        _promoPageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+
+    // Auto-scroll for services section
+    _servicesTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (_servicesPageController.hasClients) {
+        _servicesCurrentPage = (_servicesCurrentPage + 1) % _banners.length;
+        _servicesPageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+
+    // Auto-scroll for articles section
+    _articlesTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (_articlesPageController.hasClients) {
+        _articlesCurrentPage = (_articlesCurrentPage + 1) % 3;
+        _articlesPageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  void _pauseAutoScroll() {
+    _promoTimer?.cancel();
+    _servicesTimer?.cancel();
+    _articlesTimer?.cancel();
+  }
+
+  void _resumeAutoScroll() {
+    _startAutoScroll();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _promoTimer?.cancel();
+    _servicesTimer?.cancel();
+    _articlesTimer?.cancel();
+    _promoPageController.dispose();
+    _servicesPageController.dispose();
+    _articlesPageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -179,25 +279,29 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildSearchBar() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(25),
       ),
-      child: const Row(
-        children: [
-          Icon(Icons.search, color: Colors.grey, size: 20),
-          SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'Hơn 100 dịch vụ quý khách đang cần',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 14,
-              ),
-            ),
+      child: TextField(
+        controller: _searchController,
+        decoration: const InputDecoration(
+          hintText: 'Hơn 100 dịch vụ quý khách đang cần',
+          hintStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 14,
           ),
-        ],
+          border: InputBorder.none,
+          icon: Icon(Icons.search, color: Colors.grey, size: 20),
+        ),
+        onSubmitted: (value) {
+          // Handle search
+          if (value.isNotEmpty) {
+            // TODO: Implement search functionality
+            print('Searching for: $value');
+          }
+        },
       ),
     );
   }
@@ -303,15 +407,6 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildPromotionSection() {
-    final banners = [
-      'assets/banners/co_khi.png',
-      'assets/banners/dien_nuoc.png',
-      'assets/banners/do_nuoc.png',
-      'assets/banners/noi_that.png',
-      'assets/banners/van_chuyen.png',
-      'assets/banners/ve_sinh.png',
-    ];
-
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
@@ -331,41 +426,17 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 15),
           SizedBox(
             height: 180,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: banners.length,
+            child: PageView.builder(
+              controller: _promoPageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _promoCurrentPage = index % _banners.length;
+                });
+              },
+              itemCount: _banners.length * 100, // Infinite scroll
               itemBuilder: (context, index) {
-                return Container(
-                  width: 320,
-                  margin: const EdgeInsets.only(right: 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withValues(alpha: 0.2),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      banners[index],
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[300],
-                          child: const Center(
-                            child: Icon(Icons.error, color: Colors.red),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                );
+                final bannerIndex = index % _banners.length;
+                return _buildCarouselItem(_banners[bannerIndex], _promoPageController, index.toDouble());
               },
             ),
           ),
@@ -375,15 +446,6 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildServicesCommerceSection() {
-    final banners = [
-      'assets/banners/co_khi.png',
-      'assets/banners/dien_nuoc.png',
-      'assets/banners/do_nuoc.png',
-      'assets/banners/noi_that.png',
-      'assets/banners/van_chuyen.png',
-      'assets/banners/ve_sinh.png',
-    ];
-
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
@@ -403,41 +465,17 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 15),
           SizedBox(
             height: 180,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: banners.length,
+            child: PageView.builder(
+              controller: _servicesPageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _servicesCurrentPage = index % _banners.length;
+                });
+              },
+              itemCount: _banners.length * 100, // Infinite scroll
               itemBuilder: (context, index) {
-                return Container(
-                  width: 320,
-                  margin: const EdgeInsets.only(right: 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withValues(alpha: 0.2),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      banners[index],
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[300],
-                          child: const Center(
-                            child: Icon(Icons.error, color: Colors.red),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                );
+                final bannerIndex = index % _banners.length;
+                return _buildCarouselItem(_banners[bannerIndex], _servicesPageController, index.toDouble());
               },
             ),
           ),
@@ -466,90 +504,227 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 15),
           SizedBox(
             height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: 3,
+            child: PageView.builder(
+              controller: _articlesPageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _articlesCurrentPage = index % 3;
+                });
+              },
+              itemCount: 3 * 100, // Infinite scroll
               itemBuilder: (context, index) {
-                return Container(
-                  width: 280,
-                  margin: const EdgeInsets.only(right: 12),
-                  decoration: BoxDecoration(
-                    color: index == 1 ? const Color(0xFFFFC107) : const Color(0xFF2196F3),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withValues(alpha: 0.2),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Text(
-                            'THỢ VIỆT',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          index == 1 
-                            ? 'DỊCH VỤ ĐIỆN NƯỚC'
-                            : 'DỊCH VỤ CƠ KHÍ',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        if (index == 1) ...[
-                          const Text(
-                            '• Hệ thống điện - nước',
-                            style: TextStyle(fontSize: 12, color: Colors.white70),
-                          ),
-                          const Text(
-                            '• Hệ thống mạng, camera',
-                            style: TextStyle(fontSize: 12, color: Colors.white70),
-                          ),
-                          const Text(
-                            '• Hệ thống thiết bị NLMT',
-                            style: TextStyle(fontSize: 12, color: Colors.white70),
-                          ),
-                        ],
-                        const Spacer(),
-                        const Text(
-                          '1800 812',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                final articleIndex = index % 3;
+                return _buildArticleCarouselItem(_articlesPageController, index.toDouble(), articleIndex);
               },
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildCarouselItem(String imagePath, PageController controller, double index) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        if (!controller.position.haveDimensions) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        }
+
+        final page = controller.page ?? 0;
+        final difference = (page - index).abs();
+        
+        double scale = 1.0;
+        double opacity = 1.0;
+        
+        // With viewportFraction 0.8, adjacent pages are 0.8 apart
+        if (difference > 0.6) {
+          // Side items: smaller and less opaque
+          scale = 0.6;
+          opacity = 0.5;
+        } else if (difference > 0.2) {
+          // Transition items
+          final progress = (difference - 0.2) / 0.4;
+          scale = 0.6 + (0.4 * (1 - progress));
+          opacity = 0.5 + (0.5 * (1 - progress));
+        } else {
+          // Center item: full size and opacity
+          scale = 1.0;
+          opacity = 1.0;
+        }
+
+        return Transform.scale(
+          scale: scale,
+          alignment: Alignment.center,
+          child: Opacity(
+            opacity: opacity,
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withValues(alpha: 0.2 * opacity),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[300],
+                      child: const Center(
+                        child: Icon(Icons.error, color: Colors.red),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildArticleCarouselItem(PageController controller, double index, int articleIndex) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        if (!controller.position.haveDimensions) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: articleIndex == 1 ? const Color(0xFFFFC107) : const Color(0xFF2196F3),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text('Loading...'),
+            ),
+          );
+        }
+
+        final page = controller.page ?? 0;
+        final difference = (page - index).abs();
+        
+        double scale = 1.0;
+        double opacity = 1.0;
+        
+        // With viewportFraction 0.8, adjacent pages are 0.8 apart
+        if (difference > 0.6) {
+          // Side items: smaller and less opaque
+          scale = 0.6;
+          opacity = 0.5;
+        } else if (difference > 0.2) {
+          // Transition items
+          final progress = (difference - 0.2) / 0.4;
+          scale = 0.6 + (0.4 * (1 - progress));
+          opacity = 0.5 + (0.5 * (1 - progress));
+        } else {
+          // Center item: full size and opacity
+          scale = 1.0;
+          opacity = 1.0;
+        }
+
+        return Transform.scale(
+          scale: scale,
+          child: Opacity(
+            opacity: opacity,
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: articleIndex == 1 ? const Color(0xFFFFC107) : const Color(0xFF2196F3),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withValues(alpha: 0.2 * opacity),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'THỢ VIỆT',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      articleIndex == 1 
+                        ? 'DỊCH VỤ ĐIỆN NƯỚC'
+                        : 'DỊCH VỤ CƠ KHÍ',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    if (articleIndex == 1) ...[
+                      const Text(
+                        '• Hệ thống điện - nước',
+                        style: TextStyle(fontSize: 12, color: Colors.white70),
+                      ),
+                      const Text(
+                        '• Hệ thống mạng, camera',
+                        style: TextStyle(fontSize: 12, color: Colors.white70),
+                      ),
+                      const Text(
+                        '• Hệ thống thiết bị NLMT',
+                        style: TextStyle(fontSize: 12, color: Colors.white70),
+                      ),
+                    ],
+                    const Spacer(),
+                    const Text(
+                      '1800 812',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
