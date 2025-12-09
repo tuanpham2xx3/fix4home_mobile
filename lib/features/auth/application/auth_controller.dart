@@ -31,6 +31,18 @@ class AuthController extends AsyncNotifier<AuthState> {
     _authRepository = ref.watch(authRepositoryProvider);
     _tokenStorageService = ref.watch(tokenStorageServiceProvider);
     
+    // DEBUG MODE: Skip login - always return authenticated state
+    // TODO: Remove this for production
+    return AuthState.authenticated(
+      user: const User(
+        id: 'debug-user-1',
+        name: 'Debug User',
+        email: 'debug@example.com',
+      ),
+    );
+    
+    // Original authentication check (commented out for debugging)
+    /*
     // Check if we have stored tokens
     final tokens = await _tokenStorageService.getTokens();
     if (tokens != null && tokens.accessToken.isNotEmpty) {
@@ -68,6 +80,7 @@ class AuthController extends AsyncNotifier<AuthState> {
     
     // No tokens found, return unauthenticated
     return const AuthState.unauthenticated();
+    */
   }
 
   AuthState _decodeUserFromToken(String accessToken) {

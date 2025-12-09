@@ -20,7 +20,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authControllerProvider);
 
   return GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/home', // Changed to /home for debug mode
     routes: [
       GoRoute(
         path: '/login',

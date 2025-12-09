@@ -7,7 +7,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8E1), // Light yellow background like in image
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -25,6 +25,12 @@ class HomeScreen extends ConsumerWidget {
               // Promotion Banner Section
               _buildPromotionSection(),
               
+              // Services and Commerce Section
+              _buildServicesCommerceSection(),
+              
+              // Featured Articles Section
+              _buildFeaturedArticlesSection(),
+              
               const SizedBox(height: 20),
             ],
           ),
@@ -35,44 +41,135 @@ class HomeScreen extends ConsumerWidget {
 
   Widget _buildHeader(BuildContext context, WidgetRef ref) {
     return Container(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      child: Column(
         children: [
-          const Row(
+          Row(
             children: [
-              Text(
-                'Thợ Việt, xin chào ',
+              // Profile Picture
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.grey[300],
+                ),
+                child: const Icon(Icons.person, color: Colors.grey, size: 30),
+              ),
+              const SizedBox(width: 12),
+              // Points Button
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.monetization_on, color: Color(0xFFFFC107), size: 18),
+                    SizedBox(width: 4),
+                    Text(
+                      '0 điểm',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              // Notification Icons
+              Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications_outlined, size: 24),
+                    onPressed: () {},
+                  ),
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: const Text(
+                        '38',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.message_outlined, size: 24),
+                    onPressed: () {},
+                  ),
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: const Text(
+                        '38',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Greeting and Question
+          Row(
+            children: [
+              const Text(
+                'Chào User !',
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                   color: Colors.black87,
                 ),
               ),
-              Text('👋', style: TextStyle(fontSize: 18)),
-            ],
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.monetization_on, color: Colors.yellow, size: 16),
-                SizedBox(width: 4),
-                Text(
-                  '0 điểm',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
+              const SizedBox(width: 8),
+              const Text(
+                'Bạn muốn sửa gì ?',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black54,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
@@ -81,19 +178,11 @@ class HomeScreen extends ConsumerWidget {
 
   Widget _buildSearchBar() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey[100],
         borderRadius: BorderRadius.circular(25),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: const Row(
         children: [
@@ -101,7 +190,7 @@ class HomeScreen extends ConsumerWidget {
           SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Hơn 100 dịch vụ Quý Khách đang cần...',
+              'Hơn 100 dịch vụ quý khách đang cần',
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 14,
@@ -115,12 +204,12 @@ class HomeScreen extends ConsumerWidget {
 
   Widget _buildServicesSection() {
     return Container(
-      margin: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Đặt dịch vụ ngay2',
+            'Đặt dịch vụ ngay',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -136,18 +225,18 @@ class HomeScreen extends ConsumerWidget {
 
   Widget _buildServicesGrid() {
     final services = [
-      {'title': 'Xây dựng\nSửa nhà', 'icon': Icons.home_repair_service, 'color': const Color(0xFF4CAF50)},
-      {'title': 'Cơ khí\nNhôm kính', 'icon': Icons.build, 'color': const Color(0xFF2196F3)},
-      {'title': 'Điện nước', 'icon': Icons.electrical_services, 'color': const Color(0xFFFF9800)},
-      {'title': 'Điện lạnh', 'icon': Icons.ac_unit, 'color': const Color(0xFF00BCD4)},
-      {'title': 'Điện máy', 'icon': Icons.electrical_services, 'color': const Color(0xFFFFEB3B)},
-      {'title': 'Đồ gỗ\nNội thất', 'icon': Icons.chair, 'color': const Color(0xFF795548)},
-      {'title': 'Vệ sinh', 'icon': Icons.cleaning_services, 'color': const Color(0xFF9C27B0)},
-      {'title': 'Thông nghẹt\nHút hầm', 'icon': Icons.plumbing, 'color': const Color(0xFF607D8B)},
-      {'title': 'Chuyển nhà', 'icon': Icons.local_shipping, 'color': const Color(0xFFFF5722)},
-      {'title': 'Dịch vụ\nkhác', 'icon': Icons.more_horiz, 'color': const Color(0xFF3F51B5)},
-      {'title': 'Bảng giá', 'icon': Icons.price_check, 'color': const Color(0xFFFFEB3B)},
-      {'title': 'Tin tức', 'icon': Icons.newspaper, 'color': const Color(0xFF4CAF50)},
+      {'title': 'Xây dựng sửa nhà', 'image': 'assets/menu/sua_nha.png'},
+      {'title': 'Cơ khí nhôm kính', 'image': 'assets/menu/co_khi.png'},
+      {'title': 'Điện nước', 'image': 'assets/menu/dien_nuoc.png'},
+      {'title': 'Điện lạnh', 'image': 'assets/menu/dien_lanh.png'},
+      {'title': 'Điện máy', 'image': 'assets/menu/dien_may.png'},
+      {'title': 'Đồ gỗ nội thất', 'image': 'assets/menu/do_go.png'},
+      {'title': 'Vệ sinh', 'image': 'assets/menu/ve_sinh.png'},
+      {'title': 'Thông nghẹt hút hầm', 'image': 'assets/menu/thong_nghet.png'},
+      {'title': 'Vận chuyển', 'image': 'assets/menu/van_chuyen.png'},
+      {'title': 'Dịch vụ khác', 'image': 'assets/menu/dich_vu_khac.png'},
+      {'title': 'Bảng giá', 'image': 'assets/menu/bang_gia.png'},
+      {'title': 'Tin tức', 'image': 'assets/menu/tin_tuc.png'},
     ];
 
     return GridView.builder(
@@ -155,23 +244,22 @@ class HomeScreen extends ConsumerWidget {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
-        childAspectRatio: 0.8,
-        crossAxisSpacing: 15,
-        mainAxisSpacing: 15,
+        childAspectRatio: 0.75,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
       ),
       itemCount: services.length,
       itemBuilder: (context, index) {
         final service = services[index];
         return _buildServiceItem(
           service['title'] as String,
-          service['icon'] as IconData,
-          service['color'] as Color,
+          service['image'] as String,
         );
       },
     );
   }
 
-  Widget _buildServiceItem(String title, IconData icon, Color color) {
+  Widget _buildServiceItem(String title, String imagePath) {
     return GestureDetector(
       onTap: () {
         // Handle service tap
@@ -179,37 +267,29 @@ class HomeScreen extends ConsumerWidget {
       child: Column(
         children: [
           Container(
-            width: 60,
-            height: 60,
+            width: 70,
+            height: 70,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  color.withValues(alpha: 0.8),
-                  color,
-                ],
-              ),
-              borderRadius: BorderRadius.circular(30),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withValues(alpha: 0.3),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              color: const Color(0xFFFFC107), // Yellow background
+              borderRadius: BorderRadius.circular(35),
             ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-              size: 28,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(35),
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.error, color: Colors.red);
+                },
+              ),
             ),
           ),
           const SizedBox(height: 8),
           Text(
             title,
             textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w500,
@@ -223,125 +303,249 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildPromotionSection() {
+    final banners = [
+      'assets/banners/co_khi.png',
+      'assets/banners/dien_nuoc.png',
+      'assets/banners/do_nuoc.png',
+      'assets/banners/noi_that.png',
+      'assets/banners/van_chuyen.png',
+      'assets/banners/ve_sinh.png',
+    ];
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Chương trình khuyến mãi',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Chương trình khuyến mãi',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
           ),
           const SizedBox(height: 15),
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF2E7D32),
-                  Color(0xFF4CAF50),
-                ],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.green.withValues(alpha: 0.3),
-                  spreadRadius: 2,
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Stack(
-              children: [
-                Positioned(
-                  left: 20,
-                  top: 20,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: const Text(
-                          'Thợ Việt',
-                          style: TextStyle(
-                            color: Color(0xFF2E7D32),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'DỊCH VỤ\nXÂY DỰNG',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          height: 1.1,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      const Text(
-                        'Sửa nhà trọn gói, sơn nhà, chống thấm...',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 12,
-                        ),
+          SizedBox(
+            height: 180,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: banners.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  width: 320,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withValues(alpha: 0.2),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                ),
-                Positioned(
-                  right: 10,
-                  top: 10,
-                  child: Container(
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(10),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      banners[index],
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[300],
+                          child: const Center(
+                            child: Icon(Icons.error, color: Colors.red),
+                          ),
+                        );
+                      },
                     ),
-                    child: const Column(
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildServicesCommerceSection() {
+    final banners = [
+      'assets/banners/co_khi.png',
+      'assets/banners/dien_nuoc.png',
+      'assets/banners/do_nuoc.png',
+      'assets/banners/noi_that.png',
+      'assets/banners/van_chuyen.png',
+      'assets/banners/ve_sinh.png',
+    ];
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Dịch vụ và Thương mại',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          SizedBox(
+            height: 180,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: banners.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  width: 320,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withValues(alpha: 0.2),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      banners[index],
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[300],
+                          child: const Center(
+                            child: Icon(Icons.error, color: Colors.red),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeaturedArticlesSection() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Bài viết nổi bật',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          SizedBox(
+            height: 200,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: 3,
+              itemBuilder: (context, index) {
+                return Container(
+                  width: 280,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    color: index == 1 ? const Color(0xFFFFC107) : const Color(0xFF2196F3),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withValues(alpha: 0.2),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'GIẢM GIÁ',
-                          style: TextStyle(
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
                             color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Text(
+                            'THỢ VIỆT',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
                           ),
                         ),
+                        const SizedBox(height: 12),
                         Text(
-                          '50K',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
+                          index == 1 
+                            ? 'DỊCH VỤ ĐIỆN NƯỚC'
+                            : 'DỊCH VỤ CƠ KHÍ',
+                          style: const TextStyle(
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
-                        Text(
-                          'ĐẶT THỢ NGAY',
+                        const SizedBox(height: 8),
+                        if (index == 1) ...[
+                          const Text(
+                            '• Hệ thống điện - nước',
+                            style: TextStyle(fontSize: 12, color: Colors.white70),
+                          ),
+                          const Text(
+                            '• Hệ thống mạng, camera',
+                            style: TextStyle(fontSize: 12, color: Colors.white70),
+                          ),
+                          const Text(
+                            '• Hệ thống thiết bị NLMT',
+                            style: TextStyle(fontSize: 12, color: Colors.white70),
+                          ),
+                        ],
+                        const Spacer(),
+                        const Text(
+                          '1800 812',
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 8,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+                );
+              },
             ),
           ),
         ],

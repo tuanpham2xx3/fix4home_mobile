@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'home_screen.dart';
 import 'bookings_screen.dart';
-import 'feedback_screen.dart';
+import 'messages_screen.dart';
 import 'profile_screen.dart';
 
 final selectedIndexProvider = StateProvider<int>((ref) => 0);
@@ -17,7 +17,7 @@ class MainNavigation extends ConsumerWidget {
     final List<Widget> pages = [
       const HomeScreen(),
       const BookingsScreen(),
-      const FeedbackScreen(),
+      const MessagesScreen(),
       const ProfileScreen(),
     ];
 
@@ -45,7 +45,7 @@ class MainNavigation extends ConsumerWidget {
           },
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
-          selectedItemColor: const Color(0xFF2E7D32),
+          selectedItemColor: const Color(0xFFFFC107), // Yellow color
           unselectedItemColor: Colors.grey[600],
           selectedFontSize: 12,
           unselectedFontSize: 12,
@@ -62,9 +62,9 @@ class MainNavigation extends ConsumerWidget {
               label: 'Lịch sử',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.feedback_outlined),
-              activeIcon: Icon(Icons.feedback),
-              label: 'Góp ý',
+              icon: Icon(Icons.message_outlined),
+              activeIcon: Icon(Icons.message),
+              label: 'Tin nhắn',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
