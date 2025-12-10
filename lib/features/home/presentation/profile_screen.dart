@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/application/auth_controller.dart';
+import 'feedback_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -10,33 +11,25 @@ class ProfileScreen extends ConsumerWidget {
     final authState = ref.watch(authControllerProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8E1),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
-          'Tài khoản',
+          'Thông tin tài khoản',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
         ),
-        backgroundColor: const Color(0xFFFFF8E1),
+        backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.red),
-            onPressed: () {
-              ref.read(authControllerProvider.notifier).logout();
-            },
-          ),
-        ],
       ),
       body: authState.when(
         data: (state) {
           return state.when(
             initial: () => const Center(child: Text('Đang khởi tạo...')),
             loading: () => const Center(child: CircularProgressIndicator()),
-            authenticated: (user) => _buildProfileContent(context, user.name),
+            authenticated: (user) => _buildProfileContent(context, ref),
             unauthenticated: () => const Center(child: Text('Chưa đăng nhập')),
             error: (message) => Center(child: Text('Lỗi: $message')),
           );
@@ -47,7 +40,7 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileContent(BuildContext context, String userName) {
+  Widget _buildProfileContent(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -69,39 +62,55 @@ class ProfileScreen extends ConsumerWidget {
             ),
             child: Column(
               children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Color(0xFF2E7D32),
-                  child: Icon(
-                    Icons.person,
-                    size: 50,
-                    color: Colors.white,
+                // Avatar with yellow border
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xFFFFC107),
+                      width: 3,
+                    ),
+                  ),
+                  child: const CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.person,
+                      size: 50,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 15),
-                Text(
-                  userName,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2E7D32).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: const Text(
-                    'Khách hàng thân thiết',
-                    style: TextStyle(
-                      color: Color(0xFF2E7D32),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+                // Greeting and Member button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Quý Khách hàng',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFC107),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const Text(
+                        'Thành viên',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -111,39 +120,53 @@ class ProfileScreen extends ConsumerWidget {
           
           // Menu Items
           _buildMenuItem(
-            icon: Icons.person_outline,
-            title: 'Thông tin cá nhân',
+            icon: Icons.edit,
+            title: 'Thông tin tài khoản',
             onTap: () {},
           ),
           _buildMenuItem(
-            icon: Icons.history,
-            title: 'Lịch sử dịch vụ',
+            icon: Icons.workspace_premium,
+            title: 'Chương trình thành viên',
             onTap: () {},
           ),
           _buildMenuItem(
-            icon: Icons.favorite_outline,
-            title: 'Dịch vụ yêu thích',
-            onTap: () {},
-          ),
-          _buildMenuItem(
-            icon: Icons.payment,
-            title: 'Phương thức thanh toán',
-            onTap: () {},
-          ),
-          _buildMenuItem(
-            icon: Icons.notifications,
-            title: 'Thông báo',
+            icon: Icons.list_alt,
+            title: 'Quy trình làm việc',
             onTap: () {},
           ),
           _buildMenuItem(
             icon: Icons.help_outline,
-            title: 'Hỗ trợ',
+            title: 'Câu hỏi thường gặp',
             onTap: () {},
           ),
           _buildMenuItem(
-            icon: Icons.settings,
-            title: 'Cài đặt',
+            icon: Icons.person_add,
+            title: 'Tuyển dụng',
             onTap: () {},
+          ),
+          _buildMenuItem(
+            icon: Icons.contact_support,
+            title: 'Thông tin liên hệ',
+            onTap: () {},
+          ),
+          _buildMenuItem(
+            icon: Icons.feedback_outlined,
+            title: 'Góp ý dịch vụ',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FeedbackScreen(),
+                ),
+              );
+            },
+          ),
+          _buildMenuItem(
+            icon: Icons.logout,
+            title: 'Đăng xuất',
+            onTap: () {
+              ref.read(authControllerProvider.notifier).logout();
+            },
           ),
         ],
       ),
@@ -172,13 +195,13 @@ class ProfileScreen extends ConsumerWidget {
       child: ListTile(
         leading: Icon(
           icon,
-          color: const Color(0xFF2E7D32),
+          color: Colors.grey[800],
         ),
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w500,
-            color: Colors.black87,
+            color: Colors.grey[800],
           ),
         ),
         trailing: const Icon(
