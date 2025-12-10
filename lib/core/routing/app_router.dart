@@ -8,6 +8,8 @@ import '../../features/auth/presentation/check_email_screen.dart';
 import '../../features/auth/presentation/reset_password_screen.dart';
 import '../../features/auth/presentation/congratulations_screen.dart';
 import '../../features/home/presentation/main_navigation.dart';
+import '../../features/home/presentation/service_menu_screen.dart';
+import '../../data/services/menu_service.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -53,6 +55,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/splash',
         builder: (context, state) => const SplashScreen(),
       ),
+      GoRoute(
+        path: '/service-menu/:key',
+        builder: (context, state) {
+          final serviceKey = state.pathParameters['key'] ?? '';
+          // Get title from MenuService instead of URL to avoid encoding issues
+          final serviceTitle = MenuService.getServiceTitle(serviceKey);
+          return ServiceMenuScreen(
+            serviceKey: serviceKey,
+            serviceTitle: serviceTitle,
+          );
+        },
+      ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final loggingIn = state.matchedLocation == '/login';
@@ -60,6 +74,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       final checkingEmail = state.matchedLocation == '/check-email';
       final resettingPassword = state.matchedLocation.startsWith('/reset-password');
       final congratulations = state.matchedLocation == '/congratulations';
+      final serviceMenu = state.matchedLocation.startsWith('/service-menu') || 
+                          state.uri.path.startsWith('/service-menu');
 
       return authState.when(
         data: (authStateValue) {
@@ -71,6 +87,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             error: (_) => false,
           );
           final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword || congratulations;
+
+          // Allow service-menu for authenticated users
+          if (serviceMenu && loggedIn) {
+            return null;
+          }
 
           if (!loggedIn && !isPublicPage) {
             return '/login';

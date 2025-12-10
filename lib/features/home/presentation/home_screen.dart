@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'service_menu_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -45,6 +46,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _articlesPageController = PageController(viewportFraction: 0.8, initialPage: 0);
     
     _startAutoScroll();
+  }
+
+  void _openServiceBottomSheet(BuildContext context, String serviceKey, String title) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return FractionallySizedBox(
+          heightFactor: 0.78,
+          child: ServiceMenuBottomSheet(
+            serviceKey: serviceKey,
+            serviceTitle: title,
+          ),
+        );
+      },
+    );
   }
 
   void _startAutoScroll() {
@@ -329,18 +347,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildServicesGrid() {
     final services = [
-      {'title': 'Xây dựng sửa nhà', 'image': 'assets/menu/sua_nha.png'},
-      {'title': 'Cơ khí nhôm kính', 'image': 'assets/menu/co_khi.png'},
-      {'title': 'Điện nước', 'image': 'assets/menu/dien_nuoc.png'},
-      {'title': 'Điện lạnh', 'image': 'assets/menu/dien_lanh.png'},
-      {'title': 'Điện máy', 'image': 'assets/menu/dien_may.png'},
-      {'title': 'Đồ gỗ nội thất', 'image': 'assets/menu/do_go.png'},
-      {'title': 'Vệ sinh', 'image': 'assets/menu/ve_sinh.png'},
-      {'title': 'Thông nghẹt hút hầm', 'image': 'assets/menu/thong_nghet.png'},
-      {'title': 'Vận chuyển', 'image': 'assets/menu/van_chuyen.png'},
-      {'title': 'Dịch vụ khác', 'image': 'assets/menu/dich_vu_khac.png'},
-      {'title': 'Bảng giá', 'image': 'assets/menu/bang_gia.png'},
-      {'title': 'Tin tức', 'image': 'assets/menu/tin_tuc.png'},
+      {'title': 'Xây dựng sửa nhà', 'image': 'assets/menu/sua_nha.png', 'key': 'XayDungSuaNha'},
+      {'title': 'Cơ khí nhôm kính', 'image': 'assets/menu/co_khi.png', 'key': 'CoKhiNhomKinh'},
+      {'title': 'Điện nước', 'image': 'assets/menu/dien_nuoc.png', 'key': 'DienNuoc'},
+      {'title': 'Điện lạnh', 'image': 'assets/menu/dien_lanh.png', 'key': 'DienLanh'},
+      {'title': 'Điện máy', 'image': 'assets/menu/dien_may.png', 'key': 'DienMay'},
+      {'title': 'Đồ gỗ nội thất', 'image': 'assets/menu/do_go.png', 'key': 'DoGoNoiThat'},
+      {'title': 'Vệ sinh', 'image': 'assets/menu/ve_sinh.png', 'key': 'VeSinh'},
+      {'title': 'Thông nghẹt hút hầm', 'image': 'assets/menu/thong_nghet.png', 'key': 'ThongNghetHutHam'},
+      {'title': 'Vận chuyển', 'image': 'assets/menu/van_chuyen.png', 'key': 'ChuyenNha'},
+      {'title': 'Dịch vụ khác', 'image': 'assets/menu/dich_vu_khac.png', 'key': 'DichVuKhac'},
+      {'title': 'Bảng giá', 'image': 'assets/menu/bang_gia.png', 'key': 'BangGia'},
+      {'title': 'Tin tức', 'image': 'assets/menu/tin_tuc.png', 'key': 'TinTuc'},
     ];
 
     return GridView.builder(
@@ -358,15 +376,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         return _buildServiceItem(
           service['title'] as String,
           service['image'] as String,
+          service['key'] as String?,
         );
       },
     );
   }
 
-  Widget _buildServiceItem(String title, String imagePath) {
+  Widget _buildServiceItem(String title, String imagePath, String? serviceKey) {
     return GestureDetector(
       onTap: () {
-        // Handle service tap
+        if (serviceKey != null && serviceKey != 'DichVuKhac' && serviceKey != 'BangGia' && serviceKey != 'TinTuc') {
+          _openServiceBottomSheet(context, serviceKey, title);
+        } else {
+          // Handle special services (DichVuKhac, BangGia, TinTuc)
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Tính năng $title sẽ được cập nhật sớm')),
+          );
+        }
       },
       child: Column(
         children: [
