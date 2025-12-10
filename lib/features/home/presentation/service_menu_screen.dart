@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../data/services/menu_service.dart';
 import '../../../domain/models/menu_item.dart';
 
@@ -382,10 +383,16 @@ class ServiceMenuBottomSheet extends ConsumerWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
-          // TODO: Navigate to detail/booking
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Chọn dịch vụ: $serviceName')),
-          );
+          // Close bottom sheet and navigate to quick booking
+          Navigator.of(context).pop();
+          // Use Future.microtask to ensure navigation happens after bottom sheet closes
+          Future.microtask(() {
+            final uri = Uri(
+              path: '/quick-booking',
+              queryParameters: {'serviceName': serviceName},
+            );
+            context.push(uri.toString());
+          });
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
