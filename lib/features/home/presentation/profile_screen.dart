@@ -12,19 +12,43 @@ class ProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text(
-          'Thông tin tài khoản',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: authState.when(
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Yellow gradient header
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(top: 20, bottom: 20),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFFFFD54F),
+                    Color(0xFFFFC107),
+                    Color(0xCCFFC107),
+                    Color(0x99FFC107),
+                    Color(0x66FFC107),
+                    Color(0x33FFC107),
+                    Color(0x10FFC107),
+                    Colors.transparent,
+                  ],
+                  stops: [0.0, 0.2, 0.4, 0.55, 0.7, 0.85, 0.95, 1.0],
+                ),
+              ),
+              child: const Text(
+                'Thông tin tài khoản',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            // Content area
+            Expanded(
+              child: authState.when(
         data: (state) {
           return state.when(
             initial: () => const Center(child: Text('Đang khởi tạo...')),
@@ -36,6 +60,10 @@ class ProfileScreen extends ConsumerWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text(error.toString())),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

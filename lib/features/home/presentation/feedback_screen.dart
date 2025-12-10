@@ -6,20 +6,44 @@ class FeedbackScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8E1),
-      appBar: AppBar(
-        title: const Text(
-          'Góp ý',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        backgroundColor: const Color(0xFFFFF8E1),
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Yellow gradient header
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(top: 20, bottom: 20),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFFFFD54F),
+                    Color(0xFFFFC107),
+                    Color(0xCCFFC107),
+                    Color(0x99FFC107),
+                    Color(0x66FFC107),
+                    Color(0x33FFC107),
+                    Color(0x10FFC107),
+                    Colors.transparent,
+                  ],
+                  stops: [0.0, 0.2, 0.4, 0.55, 0.7, 0.85, 0.95, 1.0],
+                ),
+              ),
+              child: const Text(
+                'Góp ý',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            // Content area
+            Expanded(
+              child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,6 +193,10 @@ class FeedbackScreen extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
               ),
             ),
           ],
