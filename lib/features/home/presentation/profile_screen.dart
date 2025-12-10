@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/application/auth_controller.dart';
 import 'feedback_screen.dart';
+import 'account_info_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -150,7 +151,14 @@ class ProfileScreen extends ConsumerWidget {
           _buildMenuItem(
             icon: Icons.edit,
             title: 'Thông tin tài khoản',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AccountInfoScreen(),
+                ),
+              );
+            },
           ),
           _buildMenuItem(
             icon: Icons.workspace_premium,
