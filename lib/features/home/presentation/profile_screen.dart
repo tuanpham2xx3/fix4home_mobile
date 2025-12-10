@@ -5,6 +5,7 @@ import 'feedback_screen.dart';
 import 'account_info_screen.dart';
 import 'membership_screen.dart';
 import 'work_process_screen.dart';
+import 'faq_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -189,7 +190,14 @@ class ProfileScreen extends ConsumerWidget {
           _buildMenuItem(
             icon: Icons.help_outline,
             title: 'Câu hỏi thường gặp',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FAQScreen(),
+                ),
+              );
+            },
           ),
           _buildMenuItem(
             icon: Icons.person_add,

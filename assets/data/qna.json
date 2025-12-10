@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "question": "Tôi cần đặt thợ thì phải làm thế nào?",
+    "answer": "Quý Khách có thể đặt thợ một cách nhanh chóng và dễ dàng thông qua ứng dụng FIX4HOME:\n1. Chọn loại dịch vụ cần sửa chữa (xây dựng, cơ khí, điện nước, điện lạnh,...).\n2. Chọn địa chỉ, thông tin liên hệ và thời gian cần thợ đến.\n3. Xác nhận thông tin và đặt lịch."
+  },
+  {
+    "id": 2,
+    "question": "Đặt lịch trên ứng dụng FIX4HOME tôi được ưu đãi gì?",
+    "answer": "Khi đặt lịch qua ứng dụng FIX4HOME, Quý Khách sẽ nhận được các chương trình ưu đãi, khuyến mãi tùy theo từng thời điểm. Hiện tại, FIX4HOME đang giảm giá 50.000đ cho dịch vụ điện lạnh, điện máy hoặc giảm 10% chi phí nhân công cho các dịch vụ khác (trừ đồ gỗ). Ngoài ra, Quý Khách còn có thể tích điểm và nâng hạng thành viên để nhận thêm nhiều quyền lợi khác."
+  },
+  {
+    "id": 3,
+    "question": "Ứng dụng FIX4HOME cung cấp những dịch vụ nào?",
+    "answer": "FIX4HOME cung cấp một loạt dịch vụ đa dạng, bao gồm:\n- Xây dựng: sửa nhà trọn gói, sơn nhà, chống thấm,...\n- Cơ khí: sửa cửa sắt, cửa kéo, mái che, mái tôn, thi công nhôm kính,...\n- Điện nước: lắp đặt đèn điện, sửa chữa điện nước, máy bơm nước, sửa chập điện,...\n- Điện lạnh: tháo lắp, sửa chữa, vệ sinh máy lạnh, tủ lạnh, thu mua máy cũ,...\n- Điện máy: sửa máy giặt, máy tắm nóng, bếp hồng ngoại, tivi, quạt hơi nước,...\n- Đồ gỗ: thi công, sửa chữa, sơn, thiết kế, tháo lắp, đồ gỗ, nội thất,...\n- Vệ sinh: vệ sinh bồn nước và bể nước, sàn công nghiệp, vệ sinh sau xây dựng,...\n- Thông nghẹt: hút hầm cầu, thông cống, thông bồn cầu, thông lavabo, thông bồn rửa chén..\n- Vận chuyển: chuyển nhà trọn gói, vận chuyển hàng hoá, di dời đồ dùng,..."
+  },
+  {
+    "id": 4,
+    "question": "Tôi có thể đặt lịch trước không?",
+    "answer": "Có. Quý Khách hoàn toàn có thể đặt lịch trước theo thời gian mong muốn. Khi đặt dịch vụ, Quý Khách lựa chọn ngày và giờ cụ thể để FIX4HOME chủ động sắp xếp thợ phù hợp, đảm bảo đến đúng hẹn."
+  },
+  {
+    "id": 5,
+    "question": "Thợ đến trong bao lâu sau khi đặt lịch?",
+    "answer": "Sau khi đặt lịch thành công, thợ sẽ liên hệ lại với Quý Khách trong vòng 5–10 phút để xác nhận. Thông thường, thợ sẽ có mặt tại địa chỉ trong khoảng 15–30 phút, tùy theo khu vực và tình trạng giao thông."
+  },
+  {
+    "id": 6,
+    "question": "Thợ tới khảo sát, kiểm tra, báo giá có tính phí không?",
+    "answer": "Không, việc khảo sát, kiểm tra và tư vấn báo giá đều hoàn toàn miễn phí. Thợ sẽ tới tận nơi, đánh giá tình trạng và đưa ra báo giá chi tiết trước khi Quý Khách quyết định có sử dụng dịch vụ hay không."
+  },
+  {
+    "id": 7,
+    "question": "Chi phí tính như thế nào?",
+    "answer": "Chi phí dịch vụ được tính dựa trên công việc thực tế, bao gồm chi phí nhân công và vật tư (nếu có). Sau khi khảo sát, thợ sẽ lập một bảng báo giá chi tiết, minh bạch và chỉ tiến hành công việc khi có sự đồng ý của Quý Khách."
+  },
+  {
+    "id": 8,
+    "question": "Tôi thấy thợ báo giá cao, không hợp lý thì xử lý như thế nào?",
+    "answer": "Nếu Quý Khách cảm thấy báo giá chưa hợp lý, vui lòng gửi góp ý ngay trên ứng dụng FIX4HOME tại mục Góp ý hoặc liên hệ tổng đài miễn phí 1800 8122. Bộ phận chăm sóc khách hàng sẽ tiếp nhận, kiểm tra lại và hỗ trợ xử lý kịp thời."
+  },
+  {
+    "id": 9,
+    "question": "Tôi có thể thanh toán bằng cách nào?",
+    "answer": "FIX4HOME chấp nhận nhiều hình thức thanh toán đa dạng để thuận tiện cho Khách hàng, bao gồm:\n- Tiền mặt.\n- Chuyển khoản ngân hàng.\n- Ví điện tử MoMo."
+  },
+  {
+    "id": 10,
+    "question": "Tôi gọi số điện thoại của thợ để đặt lịch hay bảo hành được không?",
+    "answer": "Quý Khách không nên gọi trực tiếp cho thợ để đặt lịch hay bảo hành. FIX4HOME khuyến cáo Khách hàng nên đặt lịch qua ứng dụng để đảm bảo dịch vụ được giám sát chặt chẽ, chất lượng được đảm bảo và quyền lợi bảo hành được duy trì, kể cả khi người thợ đó đã nghỉ việc."
+  },
+  {
+    "id": 11,
+    "question": "Khi cần bảo hành tôi liên hệ như thế nào?",
+    "answer": "Khi cần bảo hành, Quý Khách vui lòng gửi yêu cầu trực tiếp trên ứng dụng FIX4HOME tại mục Lịch sử công việc. Thông tin dịch vụ đã được lưu trên hệ thống, giúp quá trình bảo hành nhanh chóng và thuận tiện. Trong trường hợp khẩn cấp, Quý Khách có thể gọi đến tổng đài 1800 8122 để được hỗ trợ ngay."
+  },
+  {
+    "id": 12,
+    "question": "Khi cần phàn nàn dịch vụ tôi liên hệ ai xử lý?",
+    "answer": "Nếu có bất kỳ phàn nàn nào về dịch vụ, Quý Khách có thể gửi góp ý trực tiếp trên ứng dụng FIX4HOME tại mục Góp ý. Bộ phận chăm sóc khách hàng sẽ tiếp nhận và xử lý nhanh chóng. Ngoài ra, Quý Khách cũng có thể liên hệ tổng đài 1800 8122 để được hỗ trợ trực tiếp."
+  },
+  {
+    "id": 13,
+    "question": "Dấu hiệu nhận biết nhân viên FIX4HOME như thế nào?",
+    "answer": "Để nhận biết nhân viên FIX4HOME, Quý Khách có thể kiểm tra các yếu tố sau: ảnh đại diện Zalo hiển thị khuôn mặt, đồng phục FIX4HOME, có tên và mã nhân viên, chuyên ngành và kinh nghiệm, cùng với mã QR để xem hồ sơ năng lực và phản hồi dịch vụ."
+  },
+  {
+    "id": 14,
+    "question": "FIX4HOME có xuất hoá đơn VAT không?",
+    "answer": "Có, FIX4HOME có thể xuất hóa đơn giá trị gia tăng (VAT) đầy đủ cho Khách hàng khi có yêu cầu."
+  },
+  {
+    "id": 15,
+    "question": "FIX4HOME có hỗ trợ Khách hàng doanh nghiệp, công trình lớn không?",
+    "answer": "Có, FIX4HOME không chỉ phục vụ Khách hàng cá nhân mà còn hỗ trợ Khách hàng doanh nghiệp và các công trình lớn, bao gồm sửa chữa nhà xưởng, văn phòng, và các dự án đòi hỏi quy trình thi công phức tạp hơn."
+  }
+]
