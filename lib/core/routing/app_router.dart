@@ -9,6 +9,7 @@ import '../../features/auth/presentation/reset_password_screen.dart';
 import '../../features/auth/presentation/congratulations_screen.dart';
 import '../../features/home/presentation/main_navigation.dart';
 import '../../features/home/presentation/service_menu_screen.dart';
+import '../../features/home/presentation/search_screen.dart';
 import '../../data/services/menu_service.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -66,6 +67,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             serviceTitle: serviceTitle,
           );
         },
+      ),
+      GoRoute(
+        path: '/search',
+        builder: (context, state) => const SearchScreen(),
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {

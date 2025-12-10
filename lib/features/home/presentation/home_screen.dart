@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'service_menu_screen.dart';
+import 'search_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -127,31 +128,54 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header Section
-              _buildHeader(context, ref),
-              
-              // Search Bar
-              _buildSearchBar(),
-              
-              // Services Grid Section
-              _buildServicesSection(),
-              
-              // Promotion Banner Section
-              _buildPromotionSection(),
-              
-              // Services and Commerce Section
-              _buildServicesCommerceSection(),
-              
-              // Featured Articles Section
-              _buildFeaturedArticlesSection(),
-              
-              const SizedBox(height: 20),
-            ],
-          ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 170,
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFFFFD54F),
+                      Color(0xFFFFC107),
+                      Color(0x10FFC107), // fade to transparent
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header Section
+                  _buildHeader(context, ref),
+                  
+                  // Search Bar
+                  _buildSearchBar(),
+                  
+                  // Services Grid Section
+                  _buildServicesSection(),
+                  
+                  // Promotion Banner Section
+                  _buildPromotionSection(),
+                  
+                  // Services and Commerce Section
+                  _buildServicesCommerceSection(),
+                  
+                  // Featured Articles Section
+                  _buildFeaturedArticlesSection(),
+                  
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -295,31 +319,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildSearchBar() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(25),
-      ),
-      child: TextField(
-        controller: _searchController,
-        decoration: const InputDecoration(
-          hintText: 'Hơn 100 dịch vụ quý khách đang cần',
-          hintStyle: TextStyle(
-            color: Colors.grey,
-            fontSize: 14,
-          ),
-          border: InputBorder.none,
-          icon: Icon(Icons.search, color: Colors.grey, size: 20),
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const SearchScreen()),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-        onSubmitted: (value) {
-          // Handle search
-          if (value.isNotEmpty) {
-            // TODO: Implement search functionality
-            print('Searching for: $value');
-          }
-        },
+        child: Row(
+          children: const [
+            Icon(Icons.search, color: Colors.grey, size: 20),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Hơn 100 dịch vụ Quý Khách đang cần...',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
