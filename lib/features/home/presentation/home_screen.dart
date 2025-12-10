@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'service_menu_screen.dart';
 import 'search_screen.dart';
 
@@ -128,37 +129,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              height: 170,
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xFFFFD54F),
-                      Color(0xFFFFC107),
-                      Color(0x10FFC107), // fade to transparent
-                    ],
+        child: CustomScrollView(
+          slivers: [
+            // SliverAppBar - Header màu vàng (ẩn khi cuộn xuống, hiện khi cuộn lên)
+            SliverAppBar(
+              backgroundColor: Colors.transparent, // Để gradient hiển thị rõ
+              floating: true,
+              snap: true,
+              expandedHeight: 130.0,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFFFFD54F), // Vàng đậm ở trên
+                        Color(0xFFFFC107), // Vàng trung bình
+                        Color(0xCCFFC107), // Vàng nhạt (80% opacity)
+                        Color(0x99FFC107), // Vàng nhạt (60% opacity)
+                        Color(0x66FFC107), // Vàng nhạt (40% opacity)
+                        Color(0x33FFC107), // Vàng nhạt (20% opacity)
+                        Color(0x10FFC107), // Vàng cực nhạt (6% opacity)
+                        Colors.transparent, // Hoàn toàn trong suốt
+                      ],
+                      stops: [0.0, 0.2, 0.4, 0.55, 0.7, 0.85, 0.95, 1.0], // Fade mượt từ trên xuống
+                    ),
                   ),
+                  child: _buildHeaderContent(context, ref),
                 ),
               ),
             ),
-            SingleChildScrollView(
+            
+            // SliverPersistentHeader - Search bar sticky
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _SearchBarDelegate(
+                child: _buildSearchBar(),
+              ),
+            ),
+            
+            // Nội dung scrollable
+            SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header Section
-                  _buildHeader(context, ref),
-                  
-                  // Search Bar
-                  _buildSearchBar(),
-                  
                   // Services Grid Section
                   _buildServicesSection(),
                   
@@ -181,7 +196,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, WidgetRef ref) {
+  Widget _buildHeaderContent(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Column(
@@ -321,9 +336,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildSearchBar() {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const SearchScreen()),
-        );
+        context.push('/search');
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -787,5 +800,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
       },
     );
+  }
+}
+
+// Custom delegate cho Search Bar SliverPersistentHeader
+class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+
+  _SearchBarDelegate({required this.child});
+
+  @override
+  double get minExtent => 60.0;
+
+  @override
+  double get maxExtent => 60.0;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Colors.white,
+      child: child,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SearchBarDelegate oldDelegate) {
+    return oldDelegate.child != child;
   }
 }
