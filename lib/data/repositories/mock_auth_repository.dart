@@ -30,7 +30,14 @@ class MockAuthRepository implements AuthRepository {
   Future<(User, Tokens)> login(
       {required String email, required String password}) async {
     await Future.delayed(const Duration(seconds: 1));
-    if (email == 'test@example.com' && password == 'password') {
+    // Mock user credentials
+    if (email == 'user@gmail.com' && password == '123456') {
+      return (
+        const User(id: '1', name: 'User', email: 'user@gmail.com'),
+        const Tokens(accessToken: 'mock_access_token', refreshToken: 'mock_refresh_token'),
+      );
+    } else if (email == 'test@example.com' && password == 'password') {
+      // Keep old test credentials for backward compatibility
       return (
         const User(id: '1', name: 'Test User', email: 'test@example.com'),
         const Tokens(accessToken: 'access_token', refreshToken: 'refresh_token'),

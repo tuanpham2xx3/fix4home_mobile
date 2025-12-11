@@ -1,56 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../auth/application/auth_controller.dart';
 
-class AccountInfoScreen extends ConsumerStatefulWidget {
-  const AccountInfoScreen({super.key});
+class RecruitmentScreen extends StatefulWidget {
+  const RecruitmentScreen({super.key});
 
   @override
-  ConsumerState<AccountInfoScreen> createState() => _AccountInfoScreenState();
+  State<RecruitmentScreen> createState() => _RecruitmentScreenState();
 }
 
-class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
+class _RecruitmentScreenState extends State<RecruitmentScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _addressController = TextEditingController();
-  final _emailController = TextEditingController();
   final _dateOfBirthController = TextEditingController();
-  String? _selectedGender;
+  final _specializationController = TextEditingController();
+  final _livingAreaController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadUserData();
-    });
-  }
+  String? _selectedSpecialization;
 
-  void _loadUserData() {
-    final authState = ref.read(authControllerProvider);
-    authState.whenData((state) {
-      state.when(
-        initial: () {},
-        loading: () {},
-        authenticated: (user) {
-          _nameController.text = user.name;
-          _emailController.text = user.email;
-          // Set default phone if available (you can get this from user data)
-          _phoneController.text = '0971311028'; // Example from image
-        },
-        unauthenticated: () {},
-        error: (_) {},
-      );
-    });
-  }
+  final List<String> _specializations = [
+    'Điện nước',
+    'Điện lạnh',
+    'Điện máy',
+    'Cơ khí',
+    'Xây dựng',
+    'Nội thất',
+    'Vệ sinh',
+    'Vận chuyển',
+    'Khác',
+  ];
 
   @override
   void dispose() {
     _nameController.dispose();
-    _phoneController.dispose();
-    _addressController.dispose();
-    _emailController.dispose();
     _dateOfBirthController.dispose();
+    _specializationController.dispose();
+    _livingAreaController.dispose();
     super.dispose();
   }
 
@@ -58,7 +41,7 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
+      firstDate: DateTime(1950),
       lastDate: DateTime.now(),
       locale: const Locale('vi', 'VN'),
       builder: (context, child) {
@@ -82,49 +65,32 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
     }
   }
 
-  void _selectGender() {
+  void _selectSpecialization() {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                title: const Text('Nam'),
+            children: _specializations.map((specialization) {
+              return ListTile(
+                title: Text(specialization),
                 onTap: () {
                   setState(() {
-                    _selectedGender = 'Nam';
+                    _selectedSpecialization = specialization;
+                    _specializationController.text = specialization;
                   });
                   Navigator.pop(context);
                 },
-              ),
-              ListTile(
-                title: const Text('Nữ'),
-                onTap: () {
-                  setState(() {
-                    _selectedGender = 'Nữ';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('Khác'),
-                onTap: () {
-                  setState(() {
-                    _selectedGender = 'Khác';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+              );
+            }).toList(),
           ),
         );
       },
     );
   }
 
-  void _updateAccountInfo() {
+  void _submitApplication() {
     if (_formKey.currentState!.validate()) {
       // Validate required fields
       if (_nameController.text.trim().isEmpty) {
@@ -136,32 +102,50 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
         );
         return;
       }
-      if (_phoneController.text.trim().isEmpty) {
+      if (_dateOfBirthController.text.trim().isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Vui lòng nhập số điện thoại'),
+            content: Text('Vui lòng chọn ngày sinh'),
             backgroundColor: Colors.orange,
           ),
         );
         return;
       }
-      if (_addressController.text.trim().isEmpty) {
+      if (_selectedSpecialization == null || _selectedSpecialization!.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Vui lòng nhập địa chỉ'),
+            content: Text('Vui lòng chọn chuyên ngành'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        return;
+      }
+      if (_livingAreaController.text.trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Vui lòng nhập khu vực sinh sống'),
             backgroundColor: Colors.orange,
           ),
         );
         return;
       }
 
-      // Handle update logic here
+      // Handle submission
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Cập nhật thông tin thành công!'),
+          content: Text('Đơn ứng tuyển đã được gửi thành công!'),
           backgroundColor: Color(0xFFFFC107),
         ),
       );
+
+      // Clear form
+      setState(() {
+        _nameController.clear();
+        _dateOfBirthController.clear();
+        _specializationController.clear();
+        _livingAreaController.clear();
+        _selectedSpecialization = null;
+      });
     }
   }
 
@@ -193,7 +177,7 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
                     ),
                   ),
                   const Text(
-                    'Thông tin tài khoản',
+                    'Tuyển dụng',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -212,12 +196,12 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Informational message
+                      // Informational banner
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                          color: const Color(0xFFFFF9C4),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,11 +222,11 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
                             const SizedBox(width: 12),
                             const Expanded(
                               child: Text(
-                                'Quý khách vui lòng nhập đầy đủ thông tin Họ và tên, Số điện thoại và Địa chỉ. FIX4HOME sẽ sử dụng thông tin này để hỗ trợ đặt lịch nhanh chóng và thuận tiện hơn.',
+                                'FIX4HOME luôn chào đón những ứng viên có tay nghề và đam mê. Bạn sẽ được hưởng quyền lợi rõ ràng, thu nhập hấp dẫn và nhiều cơ hội phát triển nghề nghiệp. Vui lòng điền đầy đủ thông tin bên dưới để ứng tuyển.',
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 14,
                                   color: Colors.black87,
-                                  height: 1.4,
+                                  height: 1.5,
                                 ),
                               ),
                             ),
@@ -258,43 +242,12 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
                         isRequired: true,
                       ),
                       const SizedBox(height: 16),
-                      // Phone number field
-                      _buildTextField(
-                        label: 'Số điện thoại *',
-                        controller: _phoneController,
-                        hintText: 'Vui lòng nhập số điện thoại',
-                        keyboardType: TextInputType.phone,
-                        isRequired: true,
-                      ),
-                      const SizedBox(height: 16),
-                      // Address field
-                      _buildTextField(
-                        label: 'Địa chỉ *',
-                        controller: _addressController,
-                        hintText: 'Vui lòng nhập địa chỉ của Quý Khách',
-                        isRequired: true,
-                        suffixIcon: const Icon(
-                          Icons.location_on,
-                          color: Color(0xFFFFC107),
-                          size: 20,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      // Email field
-                      _buildTextField(
-                        label: 'Email',
-                        controller: _emailController,
-                        hintText: 'Vui lòng nhập email',
-                        keyboardType: TextInputType.emailAddress,
-                        isRequired: false,
-                      ),
-                      const SizedBox(height: 16),
                       // Date of birth field
                       _buildTextField(
-                        label: 'Ngày sinh',
+                        label: 'Ngày sinh *',
                         controller: _dateOfBirthController,
                         hintText: 'Vui lòng chọn ngày sinh',
-                        isRequired: false,
+                        isRequired: true,
                         readOnly: true,
                         onTap: () => _selectDate(context),
                         suffixIcon: const Icon(
@@ -304,14 +257,27 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      // Gender field
-                      _buildGenderField(),
+                      // Specialization field
+                      _buildSpecializationField(),
+                      const SizedBox(height: 16),
+                      // Living area field
+                      _buildTextField(
+                        label: 'Khu vực sinh sống *',
+                        controller: _livingAreaController,
+                        hintText: 'Vui lòng nhập khu vực sinh sống',
+                        isRequired: true,
+                        suffixIcon: const Icon(
+                          Icons.location_on,
+                          color: Color(0xFFFFC107),
+                          size: 20,
+                        ),
+                      ),
                       const SizedBox(height: 30),
-                      // Update button
+                      // Submit button
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _updateAccountInfo,
+                          onPressed: _submitApplication,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey.shade300,
                             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -321,7 +287,7 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
                             elevation: 0,
                           ),
                           child: const Text(
-                            'Cập nhật thông tin',
+                            'Gửi đơn ứng tuyển',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -347,7 +313,6 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
     required TextEditingController controller,
     required String hintText,
     bool isRequired = false,
-    TextInputType? keyboardType,
     bool readOnly = false,
     VoidCallback? onTap,
     Widget? suffixIcon,
@@ -361,7 +326,7 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
               label,
               style: const TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
             ),
@@ -378,7 +343,6 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
-          keyboardType: keyboardType,
           readOnly: readOnly,
           onTap: onTap,
           decoration: InputDecoration(
@@ -424,21 +388,32 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
     );
   }
 
-  Widget _buildGenderField() {
+  Widget _buildSpecializationField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Giới tính',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Colors.black87,
-          ),
+        const Row(
+          children: [
+            Text(
+              'Chuyên ngành *',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            Text(
+              ' *',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 14,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         InkWell(
-          onTap: _selectGender,
+          onTap: _selectSpecialization,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
@@ -450,17 +425,17 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  _selectedGender ?? 'Vui lòng chọn giới tính',
+                  _selectedSpecialization ?? 'Vui lòng chọn chuyên ngành',
                   style: TextStyle(
                     fontSize: 14,
-                    color: _selectedGender != null
+                    color: _selectedSpecialization != null
                         ? Colors.black87
                         : Colors.grey.shade600,
                   ),
                 ),
                 const Icon(
                   Icons.arrow_drop_down,
-                  color: Colors.grey,
+                  color: Colors.black87,
                 ),
               ],
             ),

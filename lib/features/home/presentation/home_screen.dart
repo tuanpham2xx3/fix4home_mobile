@@ -760,7 +760,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Text(
-                        'THỢ VIỆT',
+                        'FIX4HOME',
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,

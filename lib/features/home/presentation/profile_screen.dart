@@ -4,6 +4,8 @@ import '../../auth/application/auth_controller.dart';
 import 'feedback_screen.dart';
 import 'account_info_screen.dart';
 import 'membership_screen.dart';
+import 'contact_info_screen.dart';
+import 'recruitment_screen.dart';
 import 'work_process_screen.dart';
 import 'faq_screen.dart';
 
@@ -202,12 +204,26 @@ class ProfileScreen extends ConsumerWidget {
           _buildMenuItem(
             icon: Icons.person_add,
             title: 'Tuyển dụng',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RecruitmentScreen(),
+                ),
+              );
+            },
           ),
           _buildMenuItem(
             icon: Icons.contact_support,
             title: 'Thông tin liên hệ',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ContactInfoScreen(),
+                ),
+              );
+            },
           ),
           _buildMenuItem(
             icon: Icons.feedback_outlined,

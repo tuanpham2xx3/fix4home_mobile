@@ -100,14 +100,14 @@ class WorkProcessScreen extends StatelessWidget {
                       icon: Icons.star,
                       title: 'Xác nhận & đánh giá',
                       description:
-                          'Khách hàng xác nhận hoàn thành, đánh giá chất lượng dịch vụ, mức độ hài lòng, Thợ Việt luôn lắng nghe và cải thiện dịch vụ.',
+                          'Khách hàng xác nhận hoàn thành, đánh giá chất lượng dịch vụ, mức độ hài lòng, FIX4HOME luôn lắng nghe và cải thiện dịch vụ.',
                     ),
                     _buildStep(
                       stepNumber: 7,
                       icon: Icons.check_circle,
                       title: 'Bảo hành & hậu mãi',
                       description:
-                          'Thông tin bảo hành điện tử sẽ được cập nhật trong ứng dụng Thợ Việt, luôn có chế độ hậu mãi và hỗ trợ Khách hàng khi hết bảo hành.',
+                          'Thông tin bảo hành điện tử sẽ được cập nhật trong ứng dụng FIX4HOME, luôn có chế độ hậu mãi và hỗ trợ Khách hàng khi hết bảo hành.',
                       isLast: true,
                     ),
                     const SizedBox(height: 30),
@@ -277,7 +277,7 @@ class WorkProcessScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Thợ Việt cam kết mang đến dịch vụ chất lượng tốt nhất với quy trình làm việc chuẩn hóa, đội ngũ thợ chuyên nghiệp và chính sách bảo hành rõ ràng, trường hợp nếu không xử lý dứt điểm, Thợ Việt sẵn sàng hoàn trả tiền cho Quý Khách hàng. Công ty chân thành cảm ơn Quý Khách hàng!',
+            'FIX4HOME cam kết mang đến dịch vụ chất lượng tốt nhất với quy trình làm việc chuẩn hóa, đội ngũ thợ chuyên nghiệp và chính sách bảo hành rõ ràng, trường hợp nếu không xử lý dứt điểm, FIX4HOME sẵn sàng hoàn trả tiền cho Quý Khách hàng. Công ty chân thành cảm ơn Quý Khách hàng!',
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[700],
