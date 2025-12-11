@@ -4,6 +4,7 @@ import 'home_screen.dart';
 import 'bookings_screen.dart';
 import 'messages_screen.dart';
 import 'profile_screen.dart';
+import '../../shared/presentation/notification_banner.dart';
 
 final selectedIndexProvider = StateProvider<int>((ref) => 0);
 
@@ -22,9 +23,22 @@ class MainNavigation extends ConsumerWidget {
     ];
 
     return Scaffold(
-      body: IndexedStack(
-        index: selectedIndex,
-        children: pages,
+      body: Stack(
+        children: [
+          IndexedStack(
+            index: selectedIndex,
+            children: pages,
+          ),
+          // Notification banner overlay
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              child: NotificationBanner(),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

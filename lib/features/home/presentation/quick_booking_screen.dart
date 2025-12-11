@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import '../../../data/services/address_service.dart';
+import '../../../domain/models/booking.dart';
+import '../application/booking_provider.dart';
 
 // Riverpod providers for address service
 final addressServiceProvider = Provider<AddressService>((ref) => AddressService());
@@ -237,8 +240,43 @@ class _QuickBookingScreenState extends ConsumerState<QuickBookingScreen> {
     return days;
   }
 
+  String _generateBookingId() {
+    final now = DateTime.now();
+    final random = Random().nextInt(10000);
+    return '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}${random.toString().padLeft(5, '0')}';
+  }
+
   void _submitBooking() {
     if (_formKey.currentState!.validate() && _isFormValid) {
+      // Create booking
+      final bookingId = _generateBookingId();
+      final bookingDate = DateTime(
+        _selectedDate!.year,
+        _selectedDate!.month,
+        _selectedDate!.day,
+        _selectedTime!.hour,
+        _selectedTime!.minute,
+      );
+      
+      // Format address: only show ward/district/province (like in the image)
+      final address = _selectedWard != null 
+          ? _selectedWard!.pathWithType
+          : _streetAddressController.text.trim();
+      
+      final booking = Booking(
+        id: bookingId,
+        title: _jobContentController.text.trim(),
+        address: address,
+        date: bookingDate,
+        status: BookingStatus.pending,
+        notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
+        phone: _phoneController.text.trim(),
+        name: _nameController.text.trim(),
+      );
+
+      // Save booking
+      ref.read(bookingProvider.notifier).addBooking(booking);
+
       // Navigate to success screen
       context.pushReplacement('/booking-success');
     } else {
