@@ -239,14 +239,8 @@ class _QuickBookingScreenState extends ConsumerState<QuickBookingScreen> {
 
   void _submitBooking() {
     if (_formKey.currentState!.validate() && _isFormValid) {
-      // TODO: Implement booking submission
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Đặt lịch thành công!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      context.pop();
+      // Navigate to success screen
+      context.pushReplacement('/booking-success');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

@@ -11,6 +11,7 @@ import '../../features/home/presentation/main_navigation.dart';
 import '../../features/home/presentation/service_menu_screen.dart';
 import '../../features/home/presentation/search_screen.dart';
 import '../../features/home/presentation/quick_booking_screen.dart';
+import '../../features/home/presentation/booking_success_screen.dart';
 import '../../data/services/menu_service.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -82,6 +83,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
         },
       ),
+      GoRoute(
+        path: '/booking-success',
+        builder: (context, state) => const BookingSuccessScreen(),
+      ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final loggingIn = state.matchedLocation == '/login';
@@ -93,6 +98,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                           state.uri.path.startsWith('/service-menu');
       final quickBooking = state.matchedLocation == '/quick-booking' ||
                           state.uri.path == '/quick-booking';
+      final bookingSuccess = state.matchedLocation == '/booking-success' ||
+                            state.uri.path == '/booking-success';
 
       return authState.when(
         data: (authStateValue) {
@@ -105,8 +112,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
           final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword || congratulations;
 
-          // Allow service-menu and quick-booking for authenticated users
-          if ((serviceMenu || quickBooking) && loggedIn) {
+          // Allow service-menu, quick-booking, and booking-success for authenticated users
+          if ((serviceMenu || quickBooking || bookingSuccess) && loggedIn) {
             return null;
           }
 
