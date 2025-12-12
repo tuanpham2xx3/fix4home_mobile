@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'service_menu_screen.dart';
 import 'search_screen.dart';
 import 'membership_screen.dart';
+import 'main_navigation.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -249,70 +250,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
               const Spacer(),
-              // Notification Icons
-              Stack(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.notifications_outlined, size: 24),
-                    onPressed: () {},
-                  ),
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 16,
-                        minHeight: 16,
-                      ),
-                      child: const Text(
-                        '38',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ],
+              // Notification Icon
+              _buildIconWithBadge(
+                icon: Icons.notifications_outlined,
+                badgeCount: '38',
+                onPressed: () {},
               ),
-              Stack(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.message_outlined, size: 24),
-                    onPressed: () {},
-                  ),
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 16,
-                        minHeight: 16,
-                      ),
-                      child: const Text(
-                        '38',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ],
+              const SizedBox(width: 8),
+              // Message Icon
+              _buildIconWithBadge(
+                icon: Icons.message_outlined,
+                badgeCount: '38',
+                onPressed: () {
+                  // Chuyển sang màn hình tin nhắn (index 2)
+                  ref.read(selectedIndexProvider.notifier).state = 2;
+                },
               ),
             ],
           ),
@@ -341,6 +293,62 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildIconWithBadge({
+    required IconData icon,
+    required String badgeCount,
+    required VoidCallback onPressed,
+  }) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: IconButton(
+            icon: Icon(icon, size: 28, color: Colors.black87),
+            onPressed: onPressed,
+            padding: EdgeInsets.zero,
+          ),
+        ),
+        Positioned(
+          right: 4,
+          top: 4,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: const BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
+            ),
+            constraints: const BoxConstraints(
+              minWidth: 20,
+              minHeight: 20,
+            ),
+            child: Text(
+              badgeCount,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -446,6 +454,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       onTap: () {
         if (serviceKey != null && serviceKey != 'DichVuKhac' && serviceKey != 'BangGia' && serviceKey != 'TinTuc') {
           _openServiceBottomSheet(context, serviceKey, title);
+        } else if (serviceKey == 'BangGia') {
+          context.push('/price');
         } else {
           // Handle special services (DichVuKhac, BangGia, TinTuc)
           ScaffoldMessenger.of(context).showSnackBar(

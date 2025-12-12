@@ -13,6 +13,9 @@ import '../../features/home/presentation/search_screen.dart';
 import '../../features/home/presentation/quick_booking_screen.dart';
 import '../../features/home/presentation/booking_success_screen.dart';
 import '../../features/home/presentation/chat_detail_screen.dart';
+import '../../features/home/presentation/price_list_screen.dart';
+import '../../features/home/presentation/price_group_screen.dart';
+import '../../features/home/presentation/price_detail_screen.dart';
 import '../../data/services/menu_service.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -95,6 +98,28 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ChatDetailScreen(conversationId: conversationId);
         },
       ),
+      GoRoute(
+        path: '/price',
+        builder: (context, state) => const PriceListScreen(),
+      ),
+      GoRoute(
+        path: '/price/:groupName',
+        builder: (context, state) {
+          final groupName = state.pathParameters['groupName'] ?? '';
+          return PriceGroupScreen(groupName: groupName);
+        },
+      ),
+      GoRoute(
+        path: '/price/:groupName/:itemName',
+        builder: (context, state) {
+          final groupName = state.pathParameters['groupName'] ?? '';
+          final itemName = state.pathParameters['itemName'] ?? '';
+          return PriceDetailScreen(
+            groupName: groupName,
+            itemName: itemName,
+          );
+        },
+      ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final loggingIn = state.matchedLocation == '/login';
@@ -110,6 +135,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                             state.uri.path == '/booking-success';
       final chat = state.matchedLocation.startsWith('/chat') ||
                    state.uri.path.startsWith('/chat');
+      final price = state.matchedLocation.startsWith('/price') ||
+                    state.uri.path.startsWith('/price');
 
       return authState.when(
         data: (authStateValue) {
@@ -122,8 +149,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
           final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword || congratulations;
 
-          // Allow service-menu, quick-booking, booking-success, and chat for authenticated users
-          if ((serviceMenu || quickBooking || bookingSuccess || chat) && loggedIn) {
+          // Allow service-menu, quick-booking, booking-success, chat, price for authenticated users
+          if ((serviceMenu || quickBooking || bookingSuccess || chat || price) && loggedIn) {
             return null;
           }
 

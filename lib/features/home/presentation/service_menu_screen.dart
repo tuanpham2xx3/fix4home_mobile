@@ -217,7 +217,7 @@ class ServiceMenuBottomSheet extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     serviceTitle,
@@ -226,6 +226,7 @@ class ServiceMenuBottomSheet extends ConsumerWidget {
                       fontWeight: FontWeight.w700,
                       color: Colors.black87,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   const Text(
@@ -234,6 +235,7 @@ class ServiceMenuBottomSheet extends ConsumerWidget {
                       fontSize: 16,
                       color: Colors.black54,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -263,6 +265,7 @@ class ServiceMenuBottomSheet extends ConsumerWidget {
                                 fontWeight: FontWeight.w700,
                                 fontSize: 16,
                               ),
+                              tabAlignment: TabAlignment.center,
                               tabs: tabs
                                   .map((t) => Tab(text: _getCategoryTitle(t)))
                                   .toList(),
@@ -358,6 +361,7 @@ class ServiceMenuBottomSheet extends ConsumerWidget {
           fontSize: 13,
           color: Colors.grey[600],
         ),
+        textAlign: TextAlign.center,
       ),
     );
   }
@@ -397,6 +401,7 @@ class ServiceMenuBottomSheet extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 width: 44,
@@ -416,8 +421,10 @@ class ServiceMenuBottomSheet extends ConsumerWidget {
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ),
+              const SizedBox(width: 12),
               const Icon(Icons.chevron_right, color: Colors.grey),
             ],
           ),
