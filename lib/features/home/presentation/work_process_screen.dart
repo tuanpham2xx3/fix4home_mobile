@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/widgets/gradient_header.dart';
 
 class WorkProcessScreen extends StatelessWidget {
   const WorkProcessScreen({super.key});
@@ -11,45 +12,10 @@ class WorkProcessScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Yellow header with back button
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFC107),
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Positioned(
-                    left: 0,
-                    child: IconButton(
-                      icon: Container(
-                        width: 36,
-                        height: 36,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.black87,
-                          size: 20,
-                        ),
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                  const Text(
-                    'Quy trình làm việc',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
+            // Yellow gradient header with back button
+            GradientHeader(
+              title: 'Quy trình làm việc',
+              showBackButton: true,
             ),
             // Content area
             Expanded(

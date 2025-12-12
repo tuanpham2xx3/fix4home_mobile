@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/application/auth_controller.dart';
+import '../../../core/widgets/gradient_header.dart';
 
 class AccountInfoScreen extends ConsumerStatefulWidget {
   const AccountInfoScreen({super.key});
@@ -172,36 +173,10 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Yellow banner header with back button
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFC107),
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Positioned(
-                    left: 16,
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black87,
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                  const Text(
-                    'Thông tin tài khoản',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
+            // Yellow gradient header with back button
+            GradientHeader(
+              title: 'Thông tin tài khoản',
+              showBackButton: true,
             ),
             // Content area
             Expanded(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/gradient_header.dart';
 
 class RecruitmentScreen extends StatefulWidget {
   const RecruitmentScreen({super.key});
@@ -156,36 +157,10 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Yellow banner header with back button
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFC107),
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Positioned(
-                    left: 16,
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.black87,
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                  const Text(
-                    'Tuyển dụng',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
+            // Yellow gradient header with back button
+            GradientHeader(
+              title: 'Tuyển dụng',
+              showBackButton: true,
             ),
             // Content area
             Expanded(

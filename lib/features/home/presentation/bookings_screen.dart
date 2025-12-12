@@ -6,6 +6,7 @@ import '../../../domain/models/booking.dart';
 import '../../../domain/models/notification_message.dart';
 import '../application/booking_provider.dart';
 import '../../shared/application/notification_provider.dart';
+import '../../../core/widgets/gradient_header.dart';
 import 'main_navigation.dart';
 
 class BookingsScreen extends ConsumerStatefulWidget {
@@ -76,35 +77,8 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
         child: Column(
           children: [
             // Yellow gradient header
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.only(top: 20, bottom: 20),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFFFD54F),
-                    Color(0xFFFFC107),
-                    Color(0xCCFFC107),
-                    Color(0x99FFC107),
-                    Color(0x66FFC107),
-                    Color(0x33FFC107),
-                    Color(0x10FFC107),
-                    Colors.transparent,
-                  ],
-                  stops: [0.0, 0.2, 0.4, 0.55, 0.7, 0.85, 0.95, 1.0],
-                ),
-              ),
-              child: const Text(
-                'Lịch sử công việc',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
+            const GradientHeader(
+              title: 'Lịch sử công việc',
             ),
             
             // Tab navigation

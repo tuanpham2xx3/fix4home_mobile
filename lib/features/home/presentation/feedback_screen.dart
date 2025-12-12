@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/gradient_header.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -72,22 +73,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Yellow banner header
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFC107),
-              ),
-              child: const Text(
-                'Góp ý dịch vụ',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
+            // Yellow gradient header
+            GradientHeader(
+              title: 'Góp ý dịch vụ',
+              showBackButton: true,
             ),
             // Content area
             Expanded(
