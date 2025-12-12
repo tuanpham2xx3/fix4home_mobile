@@ -12,6 +12,7 @@ import '../../features/home/presentation/service_menu_screen.dart';
 import '../../features/home/presentation/search_screen.dart';
 import '../../features/home/presentation/quick_booking_screen.dart';
 import '../../features/home/presentation/booking_success_screen.dart';
+import '../../features/home/presentation/chat_detail_screen.dart';
 import '../../data/services/menu_service.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -87,6 +88,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/booking-success',
         builder: (context, state) => const BookingSuccessScreen(),
       ),
+      GoRoute(
+        path: '/chat/:conversationId',
+        builder: (context, state) {
+          final conversationId = state.pathParameters['conversationId'] ?? '';
+          return ChatDetailScreen(conversationId: conversationId);
+        },
+      ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final loggingIn = state.matchedLocation == '/login';
@@ -100,6 +108,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                           state.uri.path == '/quick-booking';
       final bookingSuccess = state.matchedLocation == '/booking-success' ||
                             state.uri.path == '/booking-success';
+      final chat = state.matchedLocation.startsWith('/chat') ||
+                   state.uri.path.startsWith('/chat');
 
       return authState.when(
         data: (authStateValue) {
@@ -112,8 +122,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
           final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword || congratulations;
 
-          // Allow service-menu, quick-booking, and booking-success for authenticated users
-          if ((serviceMenu || quickBooking || bookingSuccess) && loggedIn) {
+          // Allow service-menu, quick-booking, booking-success, and chat for authenticated users
+          if ((serviceMenu || quickBooking || bookingSuccess || chat) && loggedIn) {
             return null;
           }
 

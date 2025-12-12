@@ -1,0 +1,678 @@
+{
+  "bang_gia_tong_hop": [
+    {
+      "nhom_dich_vu_chinh": "Cơ khí - Nhôm kính",
+      "danh_sach_hang_muc": [
+        {
+          "ten_hang_muc": "Sửa cửa cuốn",
+          "bang_gia": [
+            { "ten": "Cửa cuốn bị lỗi cơ bản (Mở cửa, quên chìa, mất điện)", "don_vi": "Gói", "gia": "250.000 - 450.000" },
+            { "ten": "Cửa cuốn bị xô nan, kẹt nan, đứt nan", "don_vi": "Gói", "gia": "400.000 - 1.500.000" },
+            { "ten": "Cửa cuốn bị gãy trục, rơi trục", "don_vi": "Gói", "gia": "1.200.000 - 3.500.000" },
+            { "ten": "Sửa motor cửa cuốn", "don_vi": "Gói", "gia": "450.000 - 1.950.000" },
+            { "ten": "Sửa bộ lưu điện, UPS cửa cuốn", "don_vi": "Gói", "gia": "350.000 - 1.290.000" },
+            { "ten": "Sửa hộp điều khiển", "don_vi": "Gói", "gia": "300.000 - 900.000" },
+            { "ten": "Acuy cửa cuốn", "don_vi": "Bình", "gia": "350.000 - 900.000" },
+            { "ten": "Vỉ mạch motor", "don_vi": "Cái", "gia": "450.000 - 1.800.000" },
+            { "ten": "Hành trình motor", "don_vi": "Cái", "gia": "450.000 - 1.400.000" },
+            { "ten": "Bộ điều khiển thường", "don_vi": "Bộ", "gia": "600.000 - 900.000" },
+            { "ten": "Bộ điều khiển xịn", "don_vi": "Bộ", "gia": "1.250.000 - 2.250.000" },
+            { "ten": "Bộ điều khiển hàng nhập", "don_vi": "Bộ", "gia": "1.600.000 - 2.800.000" },
+            { "ten": "Bộ lưu điện UPS cửa cuốn 900W", "don_vi": "Bộ", "gia": "2.400.000 - 3.200.000" },
+            { "ten": "Bộ lưu điện UPS cửa cuốn 1200W", "don_vi": "Bộ", "gia": "3.200.000 - 4.800.000" },
+            { "ten": "Khóa cơ cửa cuốn", "don_vi": "Bộ", "gia": "250.000 - 900.000" },
+            { "ten": "Motor cửa cuốn thường", "don_vi": "Bộ", "gia": "2.600.000 - 3.500.000" },
+            { "ten": "Motor cửa cuốn xịn", "don_vi": "Bộ", "gia": "3.900.000 - 5.500.000" },
+            { "ten": "Motor cửa cuốn nhập khẩu", "don_vi": "Bộ", "gia": "6.500.000 - 10.500.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa cửa nhôm kính",
+          "bang_gia": [
+            { "ten": "Sửa cửa kính cường lực bị xệ, lệch", "don_vi": "Bộ", "gia": "200.000 - 400.000" },
+            { "ten": "Sửa tay nắm cửa kính", "don_vi": "Bộ", "gia": "150.000 - 300.000" },
+            { "ten": "Sửa khóa cửa kính", "don_vi": "Bộ", "gia": "150.000 - 250.000" },
+            { "ten": "Sửa cửa kính đóng nhanh", "don_vi": "Bộ", "gia": "250.000 - 400.000" },
+            { "ten": "Sửa cửa nhôm kính", "don_vi": "Bộ", "gia": "200.000 - 400.000" },
+            { "ten": "Sửa cửa nhựa lõi thép", "don_vi": "Bộ", "gia": "200.000 - 400.000" },
+            { "ten": "Thay khóa cửa kính VVP", "don_vi": "Cái", "gia": "450.000 - 650.000" },
+            { "ten": "Thay khóa cửa kính Adler", "don_vi": "Cái", "gia": "480.000 - 650.000" },
+            { "ten": "Thay khóa cửa kính Netdoor", "don_vi": "Cái", "gia": "480.000 - 550.000" },
+            { "ten": "Thay khóa cửa kính Newstar", "don_vi": "Cái", "gia": "480.000 - 650.000" },
+            { "ten": "Thay khóa bán nguyệt", "don_vi": "Bộ", "gia": "380.000 - 480.000" },
+            { "ten": "Thay khóa liền tay nắm", "don_vi": "Bộ", "gia": "800.000 - 1.100.000" },
+            { "ten": "Thay bản lề sàn", "don_vi": "Bộ", "gia": "2.500.000 - 3.500.000" },
+            { "ten": "Thay bánh xe cửa nhôm", "don_vi": "Bộ", "gia": "300.000 - 450.000" },
+            { "ten": "Thay bánh xe cửa kính cường lực", "don_vi": "Bộ", "gia": "550.000 - 950.000" },
+            { "ten": "Lắp đặt cửa kính cường lực", "don_vi": "m2", "gia": "130.000 - 170.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sơn cửa sắt",
+          "bang_gia": [
+            { "ten": "Sơn Đại Bàng", "don_vi": "m2", "gia": "90.000" },
+            { "ten": "Sơn Thái", "don_vi": "m2", "gia": "100.000" },
+            { "ten": "Sơn công nghiệp", "don_vi": "m2", "gia": "100.000" },
+            { "ten": "Sơn Maxilite", "don_vi": "m2", "gia": "100.000" },
+            { "ten": "Sơn Jotun", "don_vi": "m2", "gia": "110.000" },
+            { "ten": "Sơn Dulux", "don_vi": "m2", "gia": "150.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa cửa sắt Pano",
+          "bang_gia": [
+            { "ten": "Sửa cửa sắt thường hộp 30x60 dày 1.2", "don_vi": "Gói", "gia": "200.000 - 700.000" },
+            { "ten": "Sửa cửa sắt thường hộp 40x80 dày 1.2", "don_vi": "Gói", "gia": "250.000 - 750.000" },
+            { "ten": "Sửa cửa pano, Cửa giả gỗ hộp 30x60 dày 1.2", "don_vi": "Gói", "gia": "300.000 - 800.000" },
+            { "ten": "Sửa cửa pano, Cửa giả gỗ hộp 40x80 dày 1.2", "don_vi": "Gói", "gia": "350.000 - 850.000" },
+            { "ten": "Sửa cửa pano, Cửa giả gỗ hộp 40x80 dày 1.4", "don_vi": "Gói", "gia": "400.000 - 900.000" },
+            { "ten": "Sửa cửa pano, Cửa giả gỗ hộp 40x80 dày 1.8", "don_vi": "Gói", "gia": "450.000 - 950.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa cửa cổng sắt",
+          "bang_gia": [
+            { "ten": "Sửa cửa cổng sắt hộp 30x60 dày 1.2", "don_vi": "Gói", "gia": "300.000 - 800.000" },
+            { "ten": "Sửa cửa cổng sắt hộp 40x80 dày 1.2", "don_vi": "Gói", "gia": "350.000 - 850.000" },
+            { "ten": "Sửa cửa cổng sắt hộp 40x80 dày 1.4", "don_vi": "Gói", "gia": "400.000 - 900.000" },
+            { "ten": "Sửa cửa cổng sắt hộp 40x80 dày 1.8", "don_vi": "Gói", "gia": "450.000 - 950.000" },
+            { "ten": "Sửa cửa cổng cắt CNC cửa cổng nhôm đúc mỹ thuật", "don_vi": "Gói", "gia": "500.000 - 1.000.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa cửa sắt chung cư",
+          "bang_gia": [
+            { "ten": "Sửa cửa chung cư sắt hộp 30x60 dày 1.2", "don_vi": "Gói", "gia": "350.000 - 850.000" },
+            { "ten": "Sửa cửa chung cư sắt hộp 40x80 dày 1.2", "don_vi": "Gói", "gia": "400.000 - 900.000" },
+            { "ten": "Sửa cửa chung cư sắt hộp 40x80 dày 1.4", "don_vi": "Gói", "gia": "450.000 - 950.000" },
+            { "ten": "Sửa cửa chung cư sắt hộp 40x80 dày 1.8", "don_vi": "Gói", "gia": "500.000 - 1.000.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa cửa lùa sắt hộp",
+          "bang_gia": [
+            { "ten": "Sửa cửa lùa sắt hộp 30x60 dày 1.2", "don_vi": "Gói", "gia": "400.000 - 900.000" },
+            { "ten": "Sửa cửa lùa sắt hộp 40x80 dày 1.2", "don_vi": "Gói", "gia": "450.000 - 950.000" },
+            { "ten": "Sửa cửa lùa sắt hộp 40x80 dày 1.4", "don_vi": "Gói", "gia": "500.000 - 1.000.000" },
+            { "ten": "Sửa cửa lùa sắt hộp 40x80 dày 1.8", "don_vi": "Gói", "gia": "550.000 - 1.050.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa cửa sổ sắt hộp",
+          "bang_gia": [
+            { "ten": "Sửa cửa sổ sắt hộp 30x60 dày 1.2", "don_vi": "Gói", "gia": "150.000 - 650.000" },
+            { "ten": "Sửa cửa sổ sắt hộp 40x80 dày 1.2", "don_vi": "Gói", "gia": "200.000 - 700.000" },
+            { "ten": "Sửa cửa sổ sắt hộp 40x80 dày 1.4", "don_vi": "Gói", "gia": "250.000 - 750.000" },
+            { "ten": "Sửa cửa sổ sắt hộp 40x80 dày 1.8", "don_vi": "Gói", "gia": "300.000 - 800.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa cửa sắt kéo",
+          "bang_gia": [
+            { "ten": "Sửa cửa sắt kéo Đài Loan", "don_vi": "Gói", "gia": "300.000 - 1.150.000" },
+            { "ten": "Sửa cửa sắt kéo INOX", "don_vi": "Gói", "gia": "350.000 - 1.200.000" },
+            { "ten": "Sửa cửa sắt kéo Việt Nam", "don_vi": "Gói", "gia": "250.000 - 1.100.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Thi công mái che giếng trời",
+          "bang_gia": [
+            { "ten": "Giếng trời kính cố định với kính cường lực 10 - 12mm", "don_vi": "m2", "gia": "1.800.000 - 2.400.000" },
+            { "ten": "Mái che giếng trời mở tay (Giá tùy thuộc vào chất liệu)", "don_vi": "m2", "gia": "2.500.000 - 3.800.000" },
+            { "ten": "Mái che giếng trời tự động (Motor)", "don_vi": "m2", "gia": "Khảo sát báo giá" },
+            { "ten": "Mái kính nghệ thuật trang trí", "don_vi": "m2", "gia": "Khảo sát báo giá" },
+            { "ten": "Mái che quán ăn, nhà ở, sân trường, sân thượng...", "don_vi": "m2", "gia": "Chỉ từ 500.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Hàn dốc xe",
+          "bang_gia": [
+            { "ten": "Hàn dốc dắt xe máy đơn giản (sắt hộp)", "don_vi": "Cái", "gia": "Chỉ từ 1.100.000" },
+            { "ten": "Hàn dốc dắt xe máy có họa tiết, thẩm mỹ", "don_vi": "Cái", "gia": "Chỉ từ 2.900.000" },
+            { "ten": "Hàn dốc dắt xe máy thép dày, chịu lực cao", "don_vi": "Cái", "gia": "Chỉ từ 1.900.000" },
+            { "ten": "Sơn tĩnh điện dốc dắt xe máy", "don_vi": "Cái", "gia": "Chỉ từ 500.000" },
+            { "ten": "Sửa chữa, gia cố dốc dắt xe cũ", "don_vi": "Cái", "gia": "Khảo sát, báo giá miễn phí" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Thi công cầu thang sắt",
+          "bang_gia": [
+            { "ten": "Lan can cầu thang (nhiều chất liệu)", "don_vi": "m", "gia": "700.000 - 1.800.000" },
+            { "ten": "Lan can tay vịn (sắt, kính, inox...)", "don_vi": "md", "gia": "1.000.000 - 2.000.000" },
+            { "ten": "Lan can cầu thang", "don_vi": "md", "gia": "800.000 - 2.500.000" },
+            { "ten": "Lan can kính cường lực uốn cong", "don_vi": "md", "gia": "Chỉ từ 1.600.000" },
+            { "ten": "Khung xương sắt hộp 100x100mm", "don_vi": "md", "gia": "1.400.000 - 1.800.000" },
+            { "ten": "Khung xương sắt I100 - I200", "don_vi": "md", "gia": "1.600.000 - 2.000.000" },
+            { "ten": "Khung xương sắt I150 - I200", "don_vi": "md", "gia": "1.800.000 - 3.000.000" },
+            { "ten": "Khung xương sắt hộp 40x80mm hoặc 50x100mm", "don_vi": "md", "gia": "1.800.000 - 2.500.000" },
+            { "ten": "Khung xương sắt bản dày 8mm - 10mm", "don_vi": "md", "gia": "2.300.000 - 2.500.000" },
+            { "ten": "Khung xương sắt bản dày 10mm - 12mm (cắt CNC)", "don_vi": "md", "gia": "2.300.000 - 2.700.000" },
+            { "ten": "Khung xương sắt lốc tròn dày 5mm - 10mm", "don_vi": "md", "gia": "5.000.000 - 12.000.000" },
+            { "ten": "Bậc gỗ lim nam phi dày 30mm", "don_vi": "m2", "gia": "1.700.000 - 2.000.000" },
+            { "ten": "Bậc gỗ lim nam phi dày 30mm", "don_vi": "m", "gia": "1.800.000 - 2.000.000" },
+            { "ten": "Bậc gỗ lim nam phi dày 20mm, ốp hộp 60mm", "don_vi": "m2", "gia": "3.500.000 - 4.500.000" },
+            { "ten": "Bậc gỗ lim nam phi dày 30mm - 60mm", "don_vi": "m2", "gia": "1.800.000 - 4.000.000" },
+            { "ten": "Bậc gỗ gõ đỏ dày 30mm", "don_vi": "m2", "gia": "2.500.000 - 2.700.000" },
+            { "ten": "Bậc gỗ lim/gõ đỏ/lim lào dày 30mm - 50mm", "don_vi": "m2", "gia": "1.400.000 - 3.000.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Lắp đặt quạt thông gió",
+          "bang_gia": [
+            { "ten": "Lắp quả cầu thông gió giếng trời", "don_vi": "Cái", "gia": "Chỉ từ 1.380.000" },
+            { "ten": "Lắp quạt hút giếng trời", "don_vi": "Cái", "gia": "700.000" },
+            { "ten": "Gắn quả cầu thông gió kích thước nhỏ", "don_vi": "Cái", "gia": "630.000" },
+            { "ten": "Lắp quả cầu thông gió kích thước vừa", "don_vi": "Cái", "gia": "745.000" },
+            { "ten": "Thi công lắp quả cầu thông gió kích thước lớn", "don_vi": "Cái", "gia": "920.000" },
+            { "ten": "Lắp quả cầu thông gió trên mái tôn (bao gồm cắt tôn, gắn quạt, chống thấm)", "don_vi": "Cái", "gia": "Chỉ từ 920.000 - 1.380.000" },
+            { "ten": "Thay thế quả cầu thông gió kích thước nhỏ", "don_vi": "Cái", "gia": "345.000" },
+            { "ten": "Thay thế quả cầu thông gió kích thước vừa", "don_vi": "Cái", "gia": "460.000" },
+            { "ten": "Thay thế quả cầu thông gió kích thước lớn", "don_vi": "Cái", "gia": "630.000" },
+            { "ten": "Sửa chữa quả cầu thông gió hư hỏng", "don_vi": "Cái", "gia": "290.000" }
+          ]
+        }
+      ]
+    },
+    {
+      "nhom_dich_vu_chinh": "Điện nước",
+      "danh_sach_hang_muc": [
+        {
+          "ten_hang_muc": "Bồn cầu",
+          "bang_gia": [
+            { "ten": "Thông nghẹt bồn cầu", "don_vi": "cái", "gia": "450.000 - 550.000", "ghi_chu": "Trường hợp bồn cầu bị nghẹt vật cứng. Báo giá theo tình trạng sau." },
+            { "ten": "Sửa chữa bồn cầu bị chảy nước, xả nước, rò rỉ nước", "don_vi": "cái", "gia": "150.000 - 250.000", "ghi_chu": "Trường hợp đục bồn cầu kỹ thuật sẽ báo giá lại" },
+            { "ten": "Thay phao bồn cầu", "don_vi": "cái", "gia": "150.000 - 250.000", "ghi_chu": "Tùy loại phao bồn cầu" },
+            { "ten": "Tháo bồn cầu cũ, thay bồn cầu mới", "don_vi": "cái", "gia": "450.000 - 650.000", "ghi_chu": "Tùy loại kiểu bồn cầu" },
+            { "ten": "Lắp đặt/Sửa chữa/Thay mới bộ tiểu nam", "don_vi": "cái", "gia": "Liên hệ báo giá", "ghi_chu": "Báo giá theo phụ kiện và hãng" },
+            { "ten": "Bộ xả tiểu nam, cấp nước tiểu nam", "don_vi": "cái", "gia": "Liên hệ báo giá" },
+            { "ten": "Lắp bồn cầu mới", "don_vi": "bộ", "gia": "450.000 - 800.000" },
+            { "ten": "Thay bồn cầu cũ", "don_vi": "bộ", "gia": "600.000 - 1.100.000" },
+            { "ten": "Thay bộ xả bồn cầu (xả gạt)", "don_vi": "bộ", "gia": "150.000 - 250.000 (Công) / Từ 400.000 (Trọn gói)" },
+            { "ten": "Thay bộ xả một nhấn (nhấn đơn)", "don_vi": "bộ", "gia": "Từ 450.000" },
+            { "ten": "Thay bộ xả hai nhấn (nhấn đôi)", "don_vi": "bộ", "gia": "Từ 480.000" },
+            { "ten": "Sửa bồn cầu không bơm nước", "don_vi": "bộ", "gia": "Từ 250.000" },
+            { "ten": "Sửa bồn cầu bị rỉ nước do van cấp nước, van xả", "don_vi": "bộ", "gia": "250.000 - 500.000" },
+            { "ten": "Khắc phục chân bồn cầu rỉ nước", "don_vi": "bộ", "gia": "450.000 - 1.200.000" },
+            { "ten": "Thay vòi xịt bồn cầu", "don_vi": "bộ", "gia": "Từ 250.000" },
+            { "ten": "Thay dây cấp bồn cầu", "don_vi": "cái", "gia": "100.000 - 150.000", "ghi_chu": "Phụ thuộc vào loại dây cấp" },
+            { "ten": "Thay bộ cấp, xả bồn cầu", "don_vi": "cái", "gia": "130.000 - 230.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Bồn nước",
+          "bang_gia": [
+            { "ten": "Vệ sinh bồn nước dưới 500 lít", "don_vi": "cái", "gia": "250.000 - 350.000" },
+            { "ten": "Vệ sinh bồn nước 500 lít - 1000 lít", "don_vi": "cái", "gia": "350.000 - 450.000" },
+            { "ten": "Vệ sinh bồn nước 1500 lít - 2000 lít", "don_vi": "cái", "gia": "450.000 - 550.000" },
+            { "ten": "Vệ sinh bồn nước 2000 lít - 5000 lít", "don_vi": "cái", "gia": "500.000 - 650.000" },
+            { "ten": "Vệ sinh bồn nước trên 5000 lít", "don_vi": "cái", "gia": "Khảo sát, báo giá miễn phí" },
+            { "ten": "Lắp bồn nước 500 - 1000 lít", "don_vi": "cái", "gia": "570.000 - 860.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Pin năng lượng mặt trời",
+          "bang_gia": [
+            { "ten": "Vệ sinh pin năng lượng mặt trời suất 2.2kWp", "don_vi": "gói", "gia": "330.000" },
+            { "ten": "Vệ sinh pin năng lượng mặt trời suất 3.0kWp", "don_vi": "gói", "gia": "450.000" },
+            { "ten": "Vệ sinh pin năng lượng mặt trời suất 3.7kWp", "don_vi": "gói", "gia": "550.000" },
+            { "ten": "Vệ sinh pin năng lượng mặt trời suất 4.4kWp", "don_vi": "gói", "gia": "660.000" },
+            { "ten": "Vệ sinh pin năng lượng mặt trời suất 6.0kWp", "don_vi": "gói", "gia": "900.000" },
+            { "ten": "Vệ sinh pin năng lượng mặt trời suất 7.4kWp", "don_vi": "gói", "gia": "1.100.000" },
+            { "ten": "Vệ sinh pin năng lượng mặt trời suất 8.9kWp", "don_vi": "gói", "gia": "1.335.000" },
+            { "ten": "Vệ sinh pin năng lượng mặt trời suất 11.2kWp", "don_vi": "gói", "gia": "1.680.000" },
+            { "ten": "Vệ sinh pin năng lượng mặt trời suất 14.8kWp", "don_vi": "gói", "gia": "2.220.000" },
+            { "ten": "Vệ sinh pin năng lượng mặt trời suất 22.2kWp", "don_vi": "gói", "gia": "3.330.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Phao bồn nước",
+          "bang_gia": [
+            { "ten": "Lắp đặt phao điện tự động bơm (đã có dây nguồn sẵn)", "don_vi": "cái", "gia": "150.000 - 200.000" },
+            { "ten": "Lắp đặt phao điện tự động bơm (chưa có dây chờ sẵn)", "don_vi": "cái", "gia": "Khảo sát, báo giá miễn phí" },
+            { "ten": "Lắp/Thay phao cơ chống tràn", "don_vi": "cái", "gia": "150.000 - 200.000" },
+            { "ten": "Thay phao cơ", "don_vi": "cái", "gia": "150.000 (công) / 350.000 - 650.000 (trọn gói tùy loại)" },
+            { "ten": "Thay phao điện", "don_vi": "cái", "gia": "150.000 (công) / 180.000 - 320.000 (trọn gói tùy hãng)" },
+            { "ten": "Lắp phao điện chống cạn bồn (đã có dây nguồn sẵn)", "don_vi": "cái", "gia": "150.000 - 200.000", "ghi_chu": "Thường lắp ở bể nước ngầm" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Thông nghẹt",
+          "bang_gia": [
+            { "ten": "Thông nghẹt bồn cầu", "don_vi": "cái", "gia": "450.000 - 550.000", "ghi_chu": "Sẽ báo giá theo tình trạng sau" },
+            { "ten": "Đục bồn cầu khi nghẹt vật cứng", "don_vi": "cái", "gia": "500.000 - 600.000", "ghi_chu": "Sẽ báo giá theo tình trạng sau" },
+            { "ten": "Thông nghẹt lavabo", "don_vi": "cái", "gia": "250.000 - 350.000", "ghi_chu": "Sẽ báo giá theo tình trạng sau" },
+            { "ten": "Thông nghẹt sàn toilet", "don_vi": "cái", "gia": "450.000 - 550.000", "ghi_chu": "Sẽ báo giá theo tình trạng sau" },
+            { "ten": "Thông nghẹt bồn rửa", "don_vi": "cái", "gia": "350.000 - 450.000", "ghi_chu": "Sẽ báo giá theo tình trạng sau" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Máy bơm",
+          "bang_gia": [
+            { "ten": "Lắp máy bơm nước", "don_vi": "cái", "gia": "Từ 250.000 - 400.000" },
+            { "ten": "Lắp bơm áp cho các nguồn nước yếu", "don_vi": "cái", "gia": "Từ 300.000 - 400.000" },
+            { "ten": "Bảo dưỡng máy bơm nước", "don_vi": "lần", "gia": "150.000" },
+            { "ten": "Thay bi máy bơm nước loại 750W", "don_vi": "bộ", "gia": "Từ 400.000" },
+            { "ten": "Thay vòng bi máy bơm nước", "don_vi": "bộ", "gia": "Từ 300.000" },
+            { "ten": "Thay phớt máy bơm nước", "don_vi": "cái", "gia": "Từ 150.000" },
+            { "ten": "Thay rơ le điện tử máy bơm nước", "don_vi": "cái", "gia": "Từ 150.000" },
+            { "ten": "Thay cánh quạt máy bơm nước 125W - 150W", "don_vi": "cái", "gia": "Từ 250.000" },
+            { "ten": "Thay cánh quạt máy bơm nước 200W - 250W", "don_vi": "cái", "gia": "Từ 350.000" },
+            { "ten": "Thay cánh quạt máy bơm nước 300W - 750W", "don_vi": "cái", "gia": "Từ 450.000" },
+            { "ten": "Thay rơ le máy cơ bơm áp (Rơ le Hanil)", "don_vi": "cái", "gia": "Từ 350.000" },
+            { "ten": "Thay rơ le máy cơ bơm áp (Đài Loan)", "don_vi": "cái", "gia": "Từ 280.000" },
+            { "ten": "Thay tụ máy bơm (hút chân không/ly tâm) các loại công suất", "don_vi": "cái", "gia": "230.000 - 400.000" },
+            { "ten": "Thay bi máy bơm (hút chân không/ly tâm) các loại công suất", "don_vi": "cái", "gia": "230.000 - 500.000" },
+            { "ten": "Thay van một chiều máy bơm hút chân không", "don_vi": "cái", "gia": "Từ 250.000" },
+            { "ten": "Thay bình áp máy bơm cao áp 100W - 350W", "don_vi": "cái", "gia": "Từ 280.000" },
+            { "ten": "Sửa máy bơm không lên nước tạm thời (không vật tư)", "don_vi": "lần", "gia": "150.000" },
+            { "ten": "Quấn lại máy bơm nước bị cháy", "don_vi": "cái", "gia": "Khảo sát, báo giá miễn phí" },
+            { "ten": "Thay máy bơm 1 HP suất 30-50m3/h", "don_vi": "gói", "gia": "550.000" },
+            { "ten": "Thay máy bơm 3 HP Công suất 60m3/h", "don_vi": "gói", "gia": "800.000" },
+            { "ten": "Thay máy bơm 1 HP suất lớn 120m3/h", "don_vi": "gói", "gia": "1.500.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Dò tìm rò rỉ nước",
+          "bang_gia": [
+            { "ten": "Dò tìm rò rỉ nước nhà dân", "don_vi": "lần", "gia": "800.000 - 1.200.000" },
+            { "ten": "Dò tìm rò rỉ nước nhà máy", "don_vi": "lần", "gia": "Khảo sát, báo giá miễn phí" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Lõi lọc nước",
+          "bang_gia": [
+            { "ten": "Lõi số 1 - Smax Duo 1 Bảo vệ kép Duo Pro / Karofi pp 5 micron", "don_vi": "cái", "gia": "80.000 - 150.000" },
+            { "ten": "Lõi lọc Carbon", "don_vi": "cái", "gia": "120.000" },
+            { "ten": "Lõi lọc nước số 3 - Smax Duo 3 - Vi lọc đa điểm", "don_vi": "cái", "gia": "80.000" },
+            { "ten": "Lõi lọc CTO GAC", "don_vi": "cái", "gia": "80.000" },
+            { "ten": "Màng lọc RO Purifim USA", "don_vi": "cái", "gia": "870.000" },
+            { "ten": "Màng lọc nước RO 100GDP Hàn Quốc", "don_vi": "cái", "gia": "750.000" },
+            { "ten": "Lõi lọc nước số 5 - Lõi GAC-T33 than hoạt tính", "don_vi": "cái", "gia": "300.000" },
+            { "ten": "Lõi hồng ngoại xa (Far Infrared)", "don_vi": "cái", "gia": "350.000" },
+            { "ten": "Lõi số 9: Lõi lọc nước ORP alkaline", "don_vi": "cái", "gia": "444.000" },
+            { "ten": "Lõi lọc Nano bạc Silver Karofi", "don_vi": "cái", "gia": "400.000" },
+            { "ten": "Lõi số 10: Đèn UV diệt khuẩn", "don_vi": "cái", "gia": "1.110.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Hút hầm cầu",
+          "bang_gia": [
+            { "ten": "Hút hầm cầu nhỏ hơn 3m3 (hộ gia đình)", "don_vi": "gói", "gia": "2.500.000 - 3.000.000" },
+            { "ten": "Hút hầm cầu từ hơn 3m3 đến 6m3 (cửa hàng, quán ăn)", "don_vi": "gói", "gia": "4.500.000 - 5.000.000" },
+            { "ten": "Hút hầm cầu lớn hơn 6m3 (nhà máy, văn phòng, nhà trọ)", "don_vi": "gói", "gia": "Khảo sát, báo giá miễn phí" },
+            { "ten": "Phí dò tìm, đục vị trí hầm (nếu Khách chưa biết)", "don_vi": "gói", "gia": "1.000.000 - 1.500.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa nước & Lắp đặt đường ống",
+          "bang_gia": [
+            { "ten": "Lắp đặt hệ thống nước cho nhà vệ sinh", "don_vi": "cái/gói", "gia": "Từ 1.200.000 (cái) / Khảo sát (gói trọn)" },
+            { "ten": "Lắp ống và thiết bị rửa nhà bếp", "don_vi": "cái", "gia": "Từ 200.000" },
+            { "ten": "Lắp nước mới cho thiết bị gia dụng", "don_vi": "cái", "gia": "Từ 150.000 - 600.000" },
+            { "ten": "Cải tạo lại hệ thống nước / Lắp nước hàn PPR", "don_vi": "cái", "gia": "Khảo sát, báo giá miễn phí" },
+            { "ten": "Sửa đường ống âm bị bể / Sửa nước nổi bị bể", "don_vi": "cái", "gia": "Khảo sát, báo giá miễn phí" },
+            { "ten": "Sửa nước nóng (ống nước PPR)", "don_vi": "cái", "gia": "Khảo sát, báo giá miễn phí" },
+            { "ten": "Thay vòi nước", "don_vi": "cái", "gia": "110.000 - 170.000" },
+            { "ten": "Chống thấm / Chống hôi nhà vệ sinh", "don_vi": "gói", "gia": "Khảo sát, báo giá miễn phí" },
+            { "ten": "Tháo lắp gương soi", "don_vi": "cái", "gia": "100.000 - 250.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Bồn rửa, Lavabo",
+          "bang_gia": [
+            { "ten": "Thông tắc bồn rửa chén", "don_vi": "cái", "gia": "350.000 - 450.000" },
+            { "ten": "Thay thế vòi nước bồn rửa / Thay vòi lavabo", "don_vi": "cái", "gia": "Chỉ từ 200.000 - 300.000" },
+            { "ten": "Lắp đặt chậu rửa bát", "don_vi": "cái", "gia": "300.000 - 450.000" },
+            { "ten": "Xử lí sự cố gãy vòi nước / Rò rỉ nước ở chậu rửa / Vòi bị rỉ", "don_vi": "cái", "gia": "Chỉ từ 150.000" },
+            { "ten": "Thay bộ xả xi phông", "don_vi": "cái", "gia": "150.000 - 250.000" },
+            { "ten": "Lắp bồn rửa chén", "don_vi": "cái", "gia": "200.000 - 250.000", "ghi_chu": "Có sẵn đường nước chờ" },
+            { "ten": "Tháo lắp lavabo", "don_vi": "cái", "gia": "150.000 - 350.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Vệ sinh đường nước sinh hoạt",
+          "bang_gia": [
+            { "ten": "Vệ sinh đường nước nhà trệt", "don_vi": "gói", "gia": "800.000", "ghi_chu": "Từ 1-2 nhà vệ sinh" },
+            { "ten": "Vệ sinh đường nước nhà 1 tầng", "don_vi": "gói", "gia": "1.000.000", "ghi_chu": "Từ 1-2 nhà vệ sinh" },
+            { "ten": "Vệ sinh đường nước nhà 2 tầng", "don_vi": "gói", "gia": "1.200.000", "ghi_chu": "Từ 4-5 nhà vệ sinh" },
+            { "ten": "Vệ sinh đường nước nhà 3 tầng", "don_vi": "gói", "gia": "1.300.000", "ghi_chu": "Tối đa 2 phòng vệ sinh/tầng" },
+            { "ten": "Vệ sinh đường nước nhà 4 - 5 tầng", "don_vi": "gói", "gia": "1.400.000", "ghi_chu": "Tối đa 2 phòng vệ sinh/tầng" },
+            { "ten": "Tòa nhà nhiều phòng, xí nghiệp", "don_vi": "gói", "gia": "Khảo sát, báo giá miễn phí" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Máy nước nóng năng lượng mặt trời",
+          "bang_gia": [
+            { "ten": "Vệ sinh máy nước năng lượng mặt trời", "don_vi": "máy", "gia": "400.000 - 600.000" },
+            { "ten": "Thay ống thủy tinh 070 / 058 / 047", "don_vi": "ống", "gia": "400.000 - 700.000" },
+            { "ten": "Thay Ron 58 / 47 / 25", "don_vi": "cái", "gia": "30.000 - 50.000" },
+            { "ten": "Phao phụ bồn nước", "don_vi": "cái", "gia": "600.000" },
+            { "ten": "Nhân công thay ron", "don_vi": "cái", "gia": "150.000", "ghi_chu": "Thêm 1 cái thêm chi phí 50k" },
+            { "ten": "Nhân công thay ống thủy tinh", "don_vi": "máy", "gia": "200.000", "ghi_chu": "Nhân công tính cho 1 máy" },
+            { "ten": "Lắp đặt điện nước hoàn thiện", "don_vi": "m2", "gia": "160.000 - 180.000", "ghi_chu": "Đục tường đi dây, lắp cấp" },
+            { "ten": "Lắp đặt hệ thống nước nóng", "don_vi": "phòng", "gia": "1.700.000 - 2.800.000", "ghi_chu": "Đục lắp cấp, thoát nước" },
+            { "ten": "Lắp bồn nước lượng mặt trời", "don_vi": "cái", "gia": "570.000 - 1.150.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Đồng hồ điện",
+          "bang_gia": [
+            { "ten": "Đồng hồ điện cơ 1 pha EMIC 10(40)A", "don_vi": "cái", "gia": "380.000", "ghi_chu": "Bảo hành theo hãng" },
+            { "ten": "Đồng hồ điện trực tiếp 3 pha EMIC 100A", "don_vi": "cái", "gia": "1.700.000", "ghi_chu": "Bảo hành theo hãng" },
+            { "ten": "Đồng hồ điện tử 1 pha VSEE 5(50)A 220V", "don_vi": "cái", "gia": "650.000", "ghi_chu": "Bảo hành theo hãng" },
+            { "ten": "Đồng hồ điện tử 3 pha 50(100)A, VSE3T", "don_vi": "cái", "gia": "3.850.000", "ghi_chu": "Bảo hành theo hãng" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Quạt hút & Quạt trần",
+          "bang_gia": [
+            { "ten": "Nhân công lắp đặt quạt thông gió (đã có lỗ sẵn)", "don_vi": "cái", "gia": "150.000 - 200.000" },
+            { "ten": "Nhân công lắp đặt quạt thông gió âm trần thạch cao", "don_vi": "cái", "gia": "250.000 - 300.000" },
+            { "ten": "Nhân công lắp đặt quạt thông gió (chưa có lỗ thông tường, không đi ống)", "don_vi": "cái", "gia": "350.000 - 400.000" },
+            { "ten": "Nhân công lắp quạt thông gió đi ống gió", "don_vi": "cái", "gia": "500.000" },
+            { "ten": "Nhân công lắp quạt trần bê tông (có móc, dây nguồn sẵn)", "don_vi": "cái", "gia": "300.000 - 350.000" },
+            { "ten": "Nhân công đi nguồn (nếu chưa có nguồn điện)", "don_vi": "cái", "gia": "100.000 - 200.000" },
+            { "ten": "Nhân công tháo quạt cũ", "don_vi": "cái", "gia": "150.000 - 200.000" },
+            { "ten": "Vật tư: Ty treo quạt / Móc treo quạt", "don_vi": "cái", "gia": "50.000 - 250.000" },
+            { "ten": "Lắp quạt trần trên thạch cao", "don_vi": "cái", "gia": "550.000 - 650.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Đèn sự cố (Kentom/Exit)",
+          "bang_gia": [
+            { "ten": "Đèn Kentom KT 2200EL / 402 / 404", "don_vi": "cái", "gia": "250.000 - 270.000" },
+            { "ten": "Đèn Kentom KT 403 / 750 / 610", "don_vi": "cái", "gia": "320.000" },
+            { "ten": "Đèn Kentom KT 620", "don_vi": "cái", "gia": "350.000" },
+            { "ten": "Đèn Exit KT110", "don_vi": "cái", "gia": "270.000" },
+            { "ten": "Đèn Exit KT120", "don_vi": "cái", "gia": "280.000" }
+          ]
+        }
+      ]
+    },
+    {
+      "nhom_dich_vu_chinh": "Điện lạnh",
+      "danh_sach_hang_muc": [
+        {
+          "ten_hang_muc": "Sửa máy lạnh Mono thường",
+          "bang_gia": [
+            { "ten": "Sửa board máy lạnh 1.0 - 1.5 HP", "don_vi": "cái", "gia": "550.000 - 650.000" },
+            { "ten": "Sửa board máy lạnh 2.0 HP", "don_vi": "cái", "gia": "650.000 - 750.000" },
+            { "ten": "Thay Kapa (tụ 2 chân) 1.0 - 1.5 HP", "don_vi": "cái", "gia": "450.000 - 550.000" },
+            { "ten": "Thay Kapa (tụ 2 chân) 2.0 HP", "don_vi": "cái", "gia": "550.000 - 650.000" },
+            { "ten": "Thay Kapa (tụ 3 chân) 1.0 - 1.5 HP", "don_vi": "cái", "gia": "550.000 - 650.000" },
+            { "ten": "Thay Kapa (tụ 3 chân) 2.0 HP", "don_vi": "cái", "gia": "650.000 - 750.000" },
+            { "ten": "Thay Quạt dàn lạnh 1.0 - 1.5 HP", "don_vi": "cái", "gia": "650.000 - 700.000" },
+            { "ten": "Thay Quạt dàn lạnh 2.0 HP", "don_vi": "cái", "gia": "750.000 - 850.000" },
+            { "ten": "Thay Quạt dàn nóng 1.0 - 1.5 HP", "don_vi": "cái", "gia": "650.000 - 700.000" },
+            { "ten": "Thay Quạt dàn nóng 2.0 HP", "don_vi": "cái", "gia": "750.000 - 800.000" },
+            { "ten": "Thay mắt thần 1.0 - 1.5 HP", "don_vi": "cái", "gia": "450.000 - 550.000" },
+            { "ten": "Thay mắt thần 2.0 HP", "don_vi": "cái", "gia": "550.000 - 650.000" },
+            { "ten": "Thay mô tơ lá đảo", "don_vi": "cái", "gia": "350.000 - 450.000" },
+            { "ten": "Hàn xì dàn lạnh 1.0 - 1.5 HP", "don_vi": "cái", "gia": "350.000 - 450.000", "ghi_chu": "Đã phát hiện điểm xì, chưa bao gồm nạp gas" },
+            { "ten": "Hàn xì dàn lạnh 2.0 HP", "don_vi": "cái", "gia": "450.000 - 550.000", "ghi_chu": "Đã phát hiện điểm xì, chưa bao gồm nạp gas" },
+            { "ten": "Hàn xì dàn nóng 1.0 - 1.5 HP", "don_vi": "cái", "gia": "350.000 - 450.000", "ghi_chu": "Đã phát hiện điểm xì, chưa bao gồm nạp gas" },
+            { "ten": "Hàn xì dàn nóng 2.0 HP", "don_vi": "cái", "gia": "450.000 - 550.000", "ghi_chu": "Đã phát hiện điểm xì, chưa bao gồm nạp gas" },
+            { "ten": "Sửa nghẹt dàn (tháo dàn) 1.0 - 1.5 HP", "don_vi": "cái", "gia": "450.000 - 550.000" },
+            { "ten": "Sửa nghẹt dàn (tháo dàn) 2.0 HP", "don_vi": "cái", "gia": "550.000 - 650.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa máy lạnh Inverter",
+          "bang_gia": [
+            { "ten": "Sửa board 1.0 - 1.5 HP", "don_vi": "cái", "gia": "Từ 1.200.000", "ghi_chu": "Dàn nóng, dàn lạnh, kiểm tra báo giá" },
+            { "ten": "Sửa board 2.0 HP", "don_vi": "cái", "gia": "Khảo sát, báo giá miễn phí" },
+            { "ten": "Thay Quạt dàn lạnh 1.0 - 1.5 HP", "don_vi": "cái", "gia": "1.200.000" },
+            { "ten": "Thay Quạt dàn lạnh 2.0 HP", "don_vi": "cái", "gia": "1.300.000 - 1.550.000" },
+            { "ten": "Thay Quạt dàn nóng 1.0 - 1.5 HP", "don_vi": "cái", "gia": "650.000 - 700.000" },
+            { "ten": "Thay Quạt dàn nóng 2.0 HP", "don_vi": "cái", "gia": "700.000 - 850.000" },
+            { "ten": "Thay mắt thần 1.0 - 1.5 HP", "don_vi": "cái", "gia": "550.000 - 650.000" },
+            { "ten": "Thay mắt thần 2.0 HP", "don_vi": "cái", "gia": "650.000 - 750.000" },
+            { "ten": "Thay mô tơ lá đảo 1.0 - 1.5 HP", "don_vi": "cái", "gia": "450.000 - 550.000" },
+            { "ten": "Thay mô tơ lá đảo 2.0 HP", "don_vi": "cái", "gia": "550.000 - 650.000" },
+            { "ten": "Hàn xì dàn lạnh 1.0 - 1.5 HP", "don_vi": "cái", "gia": "450.000 - 550.000", "ghi_chu": "Đã phát hiện điểm xì, chưa bao gồm nạp gas" },
+            { "ten": "Hàn xì dàn lạnh 2.0 HP", "don_vi": "cái", "gia": "550.000 - 650.000", "ghi_chu": "Đã phát hiện điểm xì, chưa bao gồm nạp gas" },
+            { "ten": "Hàn xì dàn nóng 1.0 - 1.5 HP", "don_vi": "cái", "gia": "450.000 - 550.000", "ghi_chu": "Đã phát hiện điểm xì, chưa bao gồm nạp gas" },
+            { "ten": "Sửa nghẹt dàn (tháo dàn) 1.0 - 1.5 HP", "don_vi": "cái", "gia": "550.000 - 650.000" },
+            { "ten": "Sửa nghẹt dàn (tháo dàn) 2.0 HP", "don_vi": "cái", "gia": "650.000 - 750.000" },
+            { "ten": "Xử lý nghẹt ống thoát nước", "don_vi": "cái", "gia": "150.000 - 300.000" },
+            { "ten": "Xử lý xì đầu tán", "don_vi": "cái", "gia": "150.000" },
+            { "ten": "Tháo dàn lạnh xuống vệ sinh do chảy nước máng sau", "don_vi": "cái", "gia": "650.000" },
+            { "ten": "Thay gen si cách nhiệt ống đồng", "don_vi": "mét", "gia": "50.000 - 100.000" },
+            { "ten": "Lắp bơm thoát nước ngưng máy lạnh", "don_vi": "cái", "gia": "1.400.000 - 1.800.000", "ghi_chu": "Bơm bao nhiêu tính tiền bấy nhiêu" },
+            { "ten": "Thay remote điều khiển máy lạnh đa năng", "don_vi": "cái", "gia": "150.000" },
+            { "ten": "Thay remote chính hãng", "don_vi": "cái", "gia": "Liên hệ báo giá" },
+            { "ten": "Nạp Gas máy lạnh R22, R32, R410A", "don_vi": "kg", "gia": "650.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Lắp đặt máy lạnh",
+          "bang_gia": [
+            { "ten": "Công lắp đặt máy lạnh treo tường 1.0 - 2.0 HP", "don_vi": "bộ", "gia": "350.000" },
+            { "ten": "Công lắp đặt máy lạnh treo tường 2.5 - 3.0 HP", "don_vi": "bộ", "gia": "350.000 - 450.000" },
+            { "ten": "Công lắp đặt máy lạnh tủ đứng 3.0 - 5.0 HP", "don_vi": "bộ", "gia": "400.000 - 500.000", "ghi_chu": "Tùy theo vị trí lắp đặt dàn nóng" },
+            { "ten": "Công lắp đặt máy lạnh âm trần, Multi", "don_vi": "bộ", "gia": "Khảo sát, báo giá miễn phí" },
+            { "ten": "Công tháo dỡ máy lạnh treo tường 1.0 - 2.0 HP", "don_vi": "bộ", "gia": "200.000", "ghi_chu": "Tùy theo độ phức tạp của vị trí" },
+            { "ten": "Công tháo dỡ máy lạnh treo tường 2.5 - 3.0 HP", "don_vi": "bộ", "gia": "200.000 - 300.000" },
+            { "ten": "Công tháo dỡ máy lạnh tủ đứng, âm trần, áp trần 3.0 - 5.0 HP", "don_vi": "bộ", "gia": "350.000 - 450.000" },
+            { "ten": "Công đục tường, âm ống đồng", "don_vi": "mét", "gia": "80.000", "ghi_chu": "Chưa bao gồm công trám lại" },
+            { "ten": "Công đục tường, âm dây điện, nước", "don_vi": "mét", "gia": "50.000 - 55.000" },
+            { "ten": "Công hàn nối ống đồng 1.0 - 2.0 HP", "don_vi": "mối", "gia": "40.000" },
+            { "ten": "Phí chuyên chở máy lạnh 1.0 - 2.0 HP", "don_vi": "bộ", "gia": "100.000 - 200.000", "ghi_chu": "Khoảng cách < 2 km" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Vệ sinh máy lạnh (nhà dân)",
+          "bang_gia": [
+            { "ten": "Vệ sinh 1 máy lạnh treo tường", "don_vi": "bộ", "gia": "180.000", "ghi_chu": "Kỹ thuật sẽ kiểm tra và báo giá" },
+            { "ten": "Vệ sinh 2 máy lạnh treo tường", "don_vi": "bộ", "gia": "160.000", "ghi_chu": "Kỹ thuật sẽ kiểm tra và báo giá" },
+            { "ten": "Vệ sinh từ 3 máy lạnh treo tường", "don_vi": "bộ", "gia": "150.000", "ghi_chu": "Có giảm giá theo khối lượng cụ thể" },
+            { "ten": "Phụ phí (áp dụng căn hộ chung cư)", "don_vi": "gói", "gia": "20.000", "ghi_chu": "Phí gửi xe, gửi đồ, khuân vác thi công" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Vệ sinh máy lạnh (văn phòng, công ty)",
+          "bang_gia": [
+            { "ten": "Vệ sinh 1 máy lạnh treo tường", "don_vi": "bộ", "gia": "200.000" },
+            { "ten": "Vệ sinh 2 máy lạnh treo tường", "don_vi": "bộ", "gia": "180.000" },
+            { "ten": "Vệ sinh 3 - 5 máy lạnh treo tường", "don_vi": "bộ", "gia": "150.000" },
+            { "ten": "Vệ sinh 6 - 10 máy lạnh treo tường", "don_vi": "bộ", "gia": "140.000" },
+            { "ten": "Vệ sinh trên 10 máy lạnh treo tường", "don_vi": "bộ", "gia": "120.000" },
+            { "ten": "Vệ sinh máy lạnh tủ đứng", "don_vi": "bộ", "gia": "380.000 - 450.000", "ghi_chu": "Khảo sát báo giá trước với số lượng" },
+            { "ten": "Vệ sinh máy lạnh phòng server", "don_vi": "bộ", "gia": "280.000" },
+            { "ten": "Vệ sinh máy lạnh âm trần", "don_vi": "bộ", "gia": "350.000 - 430.000", "ghi_chu": "Tùy vào độ cao, độ phức tạp" },
+            { "ten": "Vệ sinh máy lạnh áp trần", "don_vi": "bộ", "gia": "550.000", "ghi_chu": "Tùy vào độ cao, độ phức tạp" },
+            { "ten": "Vệ sinh máy lạnh giấu trần", "don_vi": "bộ", "gia": "350.000 - 1.200.000", "ghi_chu": "Tùy thuộc vào vị trí vệ sinh, mức độ" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Vệ sinh máy lạnh (chuyên sâu)",
+          "bang_gia": [
+            { "ten": "Vệ sinh máy lạnh, tháo vỏ dàn nóng để vệ sinh chi tiết", "don_vi": "bộ", "gia": "230.000", "ghi_chu": "Nên áp dụng cho dàn nóng đặt ngoài trời lâu ngày" },
+            { "ten": "Vệ sinh tháo rã toàn bộ dàn lạnh, vỏ dàn nóng để vệ sinh chi tiết", "don_vi": "bộ", "gia": "650.000" },
+            { "ten": "Tẩy rửa bụi bẩn, bám cáu cặn lâu ngày bằng dung dịch", "don_vi": "bộ", "gia": "350.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Vật tư phụ máy lạnh",
+          "bang_gia": [
+            { "ten": "Ống đồng máy lạnh 1 HP (Thái Lan)", "don_vi": "mét", "gia": "200.000" },
+            { "ten": "Ống đồng máy lạnh 1.5 - 2 HP (Thái Lan)", "don_vi": "mét", "gia": "220.000" },
+            { "ten": "Ống đồng máy lạnh 2.5 - 3 HP (Thái Lan)", "don_vi": "mét", "gia": "300.000" },
+            { "ten": "Giá đỡ dàn nóng (Eke) 1 - 2 HP", "don_vi": "bộ", "gia": "150.000" },
+            { "ten": "Giá đỡ dàn nóng (Eke) 2.5 HP", "don_vi": "bộ", "gia": "250.000" },
+            { "ten": "Giá đỡ dàn nóng (Eke) 3 - 5 HP", "don_vi": "bộ", "gia": "320.000 - 450.000" },
+            { "ten": "Ống thoát nước ruột gà phi 21", "don_vi": "mét", "gia": "10.000" },
+            { "ten": "Ống thoát nước PVC phi 21 (Bình Minh)", "don_vi": "mét", "gia": "14.000" },
+            { "ten": "Ống thoát nước PVC phi 27 (Bình Minh)", "don_vi": "mét", "gia": "18.000" },
+            { "ten": "Ống thoát nước PVC phi 21 có cách nhiệt Supperlon", "don_vi": "mét", "gia": "26.000" },
+            { "ten": "Ống thoát nước PVC phi 27 có cách nhiệt Supperlon", "don_vi": "mét", "gia": "32.000" },
+            { "ten": "Tán nối ống đồng phi 6", "don_vi": "cái", "gia": "25.000" },
+            { "ten": "Tán nối ống đồng phi 10", "don_vi": "cái", "gia": "30.000" },
+            { "ten": "Tán nối ống đồng phi 12", "don_vi": "cái", "gia": "35.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Block, máy nén",
+          "bang_gia": [
+            { "ten": "Sửa chữa Block máy nén", "don_vi": "bộ", "gia": "700.000 - 1.200.000" },
+            { "ten": "Thay block máy lạnh cũ 1 HP", "don_vi": "bộ", "gia": "1.800.000", "ghi_chu": "Bảo hành 06 tháng" },
+            { "ten": "Thay block máy lạnh cũ 1.5 HP", "don_vi": "bộ", "gia": "2.200.000", "ghi_chu": "Bảo hành 06 tháng" },
+            { "ten": "Thay block máy lạnh cũ 2 HP", "don_vi": "bộ", "gia": "3.500.000", "ghi_chu": "Bảo hành 06 tháng" },
+            { "ten": "Thay block máy lạnh cũ 2.5 HP", "don_vi": "bộ", "gia": "4.000.000", "ghi_chu": "Bảo hành 06 tháng" },
+            { "ten": "Thay Đầu lạnh 1 HP (cũ)", "don_vi": "bộ", "gia": "1.200.000 - 2.200.000" },
+            { "ten": "Thay Đuôi nóng 1 HP (cũ)", "don_vi": "bộ", "gia": "2.000.000 - 3.300.000" },
+            { "ten": "Thay Đầu lạnh 1.5 HP (cũ)", "don_vi": "bộ", "gia": "1.600.000 - 2.800.000" },
+            { "ten": "Thay Đuôi nóng 1.5 HP (cũ)", "don_vi": "bộ", "gia": "2.500.000 - 3.800.000" },
+            { "ten": "Thay Đầu lạnh 2 HP (cũ)", "don_vi": "bộ", "gia": "2.200.000 - 3.500.000" },
+            { "ten": "Thay Đuôi nóng 2 HP (cũ)", "don_vi": "bộ", "gia": "3.500.000 - 5.000.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa chữa Tủ lạnh",
+          "bang_gia": [
+            { "ten": "Thay Sò lạnh", "don_vi": "cái", "gia": "250.000 - 350.000" },
+            { "ten": "Thay Sò nóng", "don_vi": "cái", "gia": "250.000 - 350.000" },
+            { "ten": "Thay Điện trở", "don_vi": "cái", "gia": "350.000 - 450.000" },
+            { "ten": "Thay Timer", "don_vi": "cái", "gia": "450.000 - 550.000" },
+            { "ten": "Sửa board tủ lạnh dung tích < 220 lít", "don_vi": "cái", "gia": "550.000 - 850.000" },
+            { "ten": "Sửa board tủ lạnh dung tích > 220 lít", "don_vi": "cái", "gia": "850.000 - 1.200.000" },
+            { "ten": "Sửa board tủ lạnh Inverter hoặc Side by Side", "don_vi": "cái", "gia": "950.000 - 1.800.000" },
+            { "ten": "Hàn ống đồng - nạp gas tủ 120 - 140 lít", "don_vi": "cái", "gia": "700.000" },
+            { "ten": "Hàn ống đồng - nạp gas tủ > 140 lít", "don_vi": "cái", "gia": "1.200.000" },
+            { "ten": "Hàn ống đồng - nạp gas tủ > 140 lít (Gas 600A)", "don_vi": "cái", "gia": "1.600.000" },
+            { "ten": "Thay Bộ khởi động block (rơ le themic + tụ)", "don_vi": "cái", "gia": "350.000 - 550.000" },
+            { "ten": "Thay Thermostat (cảm biến nhiệt độ)", "don_vi": "cái", "gia": "550.000" },
+            { "ten": "Thay ron tủ lạnh (trắng)", "don_vi": "cái", "gia": "270.000" },
+            { "ten": "Thay Quạt tủ lạnh cơ", "don_vi": "cái", "gia": "450.000 - 650.000" },
+            { "ten": "Thay Quạt tủ lạnh board", "don_vi": "cái", "gia": "900.000 - 1.200.000" },
+            { "ten": "Thay Quạt tủ Side by Side", "don_vi": "cái", "gia": "900.000 - 1.200.000" },
+            { "ten": "Hàn dàn + nạp gas tủ mini", "don_vi": "cái", "gia": "700.000" },
+            { "ten": "Thay dàn + nạp gas tủ mini", "don_vi": "cái", "gia": "850.000" },
+            { "ten": "Thay block tủ lạnh < 350 lít", "don_vi": "cái", "gia": "1.200.000 - 2.200.000" },
+            { "ten": "Thay block tủ lạnh > 350 lít", "don_vi": "cái", "gia": "2.500.000 - 3.500.000" },
+            { "ten": "Thay block tủ lạnh > 550 lít", "don_vi": "cái", "gia": "2.800.000 - 4.200.000" },
+            { "ten": "Sơn 2 cánh tủ lạnh thường", "don_vi": "cái", "gia": "600.000 - 1.000.000" },
+            { "ten": "Sơn cánh tủ lạnh Side by Side", "don_vi": "cái", "gia": "1.000.000 - 1.500.000" },
+            { "ten": "Vệ sinh tủ lạnh thường", "don_vi": "cái", "gia": "250.000" },
+            { "ten": "Vệ sinh tủ lạnh Side by Side", "don_vi": "cái", "gia": "450.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Vệ sinh máy giặt lồng đứng (Cửa trên)",
+          "bang_gia": [
+            { "ten": "Vệ sinh 1 máy < 9kg (Sanyo, Toshiba...)", "don_vi": "cái", "gia": "350.000", "ghi_chu": "Tháo toàn bộ lồng, vệ sinh sạch" },
+            { "ten": "Vệ sinh 2 máy < 9kg (Sanyo, Toshiba...)", "don_vi": "cái", "gia": "325.000" },
+            { "ten": "Vệ sinh 3 máy < 9kg (Sanyo, Toshiba...)", "don_vi": "cái", "gia": "300.000" },
+            { "ten": "Vệ sinh 1 máy > 9kg (Sanyo, Toshiba, Aqua...)", "don_vi": "cái", "gia": "400.000" },
+            { "ten": "Vệ sinh 2 máy > 9kg (Sanyo, Toshiba, Aqua...)", "don_vi": "cái", "gia": "350.000" },
+            { "ten": "Vệ sinh 3 máy > 9kg (Sanyo, Toshiba, Aqua...)", "don_vi": "cái", "gia": "300.000" },
+            { "ten": "Vệ sinh máy > 12kg", "don_vi": "cái", "gia": "Liên hệ báo giá" },
+            { "ten": "Vệ sinh 1 máy 7-9kg Panasonic (không tháo lồng)", "don_vi": "cái", "gia": "450.000", "ghi_chu": "Trường hợp không tháo ốc lồng" },
+            { "ten": "Vệ sinh 2 máy 7-9kg Panasonic (không tháo lồng)", "don_vi": "cái", "gia": "400.000" },
+            { "ten": "Vệ sinh 3 máy 7-9kg Panasonic (không tháo lồng)", "don_vi": "cái", "gia": "350.000" },
+            { "ten": "Vệ sinh 1 máy 9-12kg Panasonic (không tháo lồng)", "don_vi": "cái", "gia": "550.000" },
+            { "ten": "Vệ sinh 2 máy 9-12kg Panasonic (không tháo lồng)", "don_vi": "cái", "gia": "500.000" },
+            { "ten": "Vệ sinh 3 máy 9-12kg Panasonic (không tháo lồng)", "don_vi": "cái", "gia": "450.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Vệ sinh máy giặt lồng ngang (Cửa trước)",
+          "bang_gia": [
+            { "ten": "Vệ sinh 1 máy < 9kg", "don_vi": "cái", "gia": "550.000", "ghi_chu": "Tháo toàn bộ vệ sinh sạch" },
+            { "ten": "Vệ sinh 2 máy < 9kg", "don_vi": "cái", "gia": "500.000" },
+            { "ten": "Vệ sinh 3 máy < 9kg", "don_vi": "cái", "gia": "450.000" },
+            { "ten": "Vệ sinh 1 máy > 9kg", "don_vi": "cái", "gia": "650.000" },
+            { "ten": "Vệ sinh 2 máy > 9kg", "don_vi": "cái", "gia": "600.000" },
+            { "ten": "Vệ sinh 3 máy > 9kg", "don_vi": "cái", "gia": "550.000" },
+            { "ten": "Vệ sinh máy giặt nội địa", "don_vi": "cái", "gia": "800.000 - 1.000.000" },
+            { "ten": "Phụ thu máy giặt có sấy", "don_vi": "cái", "gia": "100.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa máy giặt (Chung cho Đứng & Ngang)",
+          "bang_gia": [
+            { "ten": "Lắp máy giặt", "don_vi": "cái", "gia": "230.000 - 400.000" },
+            { "ten": "Thay Dây cấp nước", "don_vi": "cái", "gia": "270.000" },
+            { "ten": "Thay van cấp đơn", "don_vi": "cái", "gia": "400.000" },
+            { "ten": "Thay van cấp đôi", "don_vi": "cái", "gia": "530.000" },
+            { "ten": "Thay van cấp bốn, sáu", "don_vi": "cái", "gia": "800.000" },
+            { "ten": "Thay Ống nước xả", "don_vi": "dây", "gia": "230.000" },
+            { "ten": "Sửa board mạch thường (Mono)", "don_vi": "cái", "gia": "450.000 - 650.000" },
+            { "ten": "Sửa board mạch Inverter", "don_vi": "cái", "gia": "Kiểm tra, báo giá miễn phí" },
+            { "ten": "Thay IC nguồn, phao cảm biến, motor xả, hộp số", "don_vi": "cái", "gia": "Kiểm tra, báo giá miễn phí" },
+            { "ten": "Thay dây dai (dây curoa)", "don_vi": "dây", "gia": "450.000" },
+            { "ten": "Thay Capa (tụ) mô tơ máy giặt", "don_vi": "cái", "gia": "400.000" },
+            { "ten": "Thay mô tơ máy giặt thường (Mono)", "don_vi": "cái", "gia": "700.000" },
+            { "ten": "Thay mô tơ máy giặt Inverter", "don_vi": "cái", "gia": "900.000" },
+            { "ten": "Thay trục giặt (tùy hãng)", "don_vi": "cái", "gia": "850.000 - 1.450.000" },
+            { "ten": "Thay chảng ba (tùy hãng)", "don_vi": "cái", "gia": "1.350.000 - 2.450.000" },
+            { "ten": "Phục hồi ty máy giặt", "don_vi": "bộ", "gia": "700.000 - 800.000" },
+            { "ten": "Làm đồng (hàn, sơn như mới)", "don_vi": "cái", "gia": "900.000 - 1.200.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa lò vi sóng",
+          "bang_gia": [
+            { "ten": "Thay cục sóng (lò cơ)", "don_vi": "cái", "gia": "600.000 - 650.000" },
+            { "ten": "Thay cục sóng (lò phím)", "don_vi": "cái", "gia": "700.000 - 800.000" },
+            { "ten": "Thay cục sóng (lò Inverter)", "don_vi": "cái", "gia": "1.100.000 - 1.350.000" },
+            { "ten": "Sửa board (lò phím)", "don_vi": "cái", "gia": "700.000 - 900.000" },
+            { "ten": "Sửa board (lò Inverter)", "don_vi": "cái", "gia": "930.000 - 1.250.000" },
+            { "ten": "Thay cầu chì", "don_vi": "cái", "gia": "500.000 - 600.000" },
+            { "ten": "Thay Timer", "don_vi": "cái", "gia": "600.000 - 700.000" },
+            { "ten": "Sơn xử lý rỉ sét", "don_vi": "cái", "gia": "600.000 - 700.000" },
+            { "ten": "Thay lá chắn sóng", "don_vi": "cái", "gia": "400.000 - 500.000" },
+            { "ten": "Thay Moter đĩa", "don_vi": "cái", "gia": "500.000 - 600.000" },
+            { "ten": "Đĩa thủy tinh lò vi sóng", "don_vi": "cái", "gia": "400.000 - 500.000" },
+            { "ten": "Thay vỏ lò vi sóng", "don_vi": "cái", "gia": "600.000 - 800.000" },
+            { "ten": "Thay Biến áp", "don_vi": "cái", "gia": "600.000 - 800.000" },
+            { "ten": "Thay Tụ lò vi sóng", "don_vi": "cái", "gia": "350.000 - 550.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa máy nước nóng trực tiếp",
+          "bang_gia": [
+            { "ten": "Sửa board", "don_vi": "cái", "gia": "400.000 - 500.000" },
+            { "ten": "Sửa bơm trợ lực (không chạy, kêu to, nước yếu)", "don_vi": "cái", "gia": "800.000 - 1.200.000" },
+            { "ten": "Thay phốt", "don_vi": "cái", "gia": "400.000 - 500.000" },
+            { "ten": "Thay điện trở", "don_vi": "cái", "gia": "400.000 - 600.000" },
+            { "ten": "Thay bầu + điện trở", "don_vi": "cái", "gia": "600.000 - 900.000" },
+            { "ten": "Thay bộ van khoá nước", "don_vi": "cái", "gia": "300.000 - 400.000" },
+            { "ten": "Hàn bầu, thay cảm biến", "don_vi": "cái", "gia": "700.000 - 800.000" },
+            { "ten": "Thay cảm biến", "don_vi": "cái", "gia": "500.000 - 600.000" },
+            { "ten": "Lắp máy nước nóng trực tiếp", "don_vi": "cái", "gia": "150.000 - 230.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Sửa máy nước nóng gián tiếp",
+          "bang_gia": [
+            { "ten": "Sửa board", "don_vi": "cái", "gia": "400.000 - 600.000" },
+            { "ten": "Hàn bình (máy rỉ nước)", "don_vi": "cái", "gia": "900.000 - 1.400.000" },
+            { "ten": "Thay thanh magie", "don_vi": "cái", "gia": "300.000 - 500.000" },
+            { "ten": "Thay rờ le nhiệt", "don_vi": "cái", "gia": "600.000 - 800.000" },
+            { "ten": "Thay điện trở", "don_vi": "cái", "gia": "600.000 - 900.000" },
+            { "ten": "Vệ sinh, bảo dưỡng bình nước nóng", "don_vi": "cái", "gia": "300.000 - 400.000" },
+            { "ten": "Lắp đặt máy nước nóng gián tiếp", "don_vi": "cái", "gia": "200.000 - 570.000" }
+          ]
+        },
+        {
+          "ten_hang_muc": "Vật tư thiết bị điện",
+          "bang_gia": [
+            { "ten": "Dây điện Daphaco 1.5", "don_vi": "mét", "gia": "8.000" },
+            { "ten": "Dây điện Daphaco 2.0", "don_vi": "mét", "gia": "10.000" },
+            { "ten": "Dây điện Cadivi 1.5", "don_vi": "mét", "gia": "12.000" },
+            { "ten": "Dây điện Cadivi 2.5", "don_vi": "mét", "gia": "15.000" },
+            { "ten": "Dây điện Cadivi 3.0", "don_vi": "mét", "gia": "18.000" },
+            { "ten": "Dây điện Cadivi 4.0", "don_vi": "mét", "gia": "21.000" },
+            { "ten": "CB tép Sino + hộp", "don_vi": "cái", "gia": "90.000" },
+            { "ten": "CB Panasonic", "don_vi": "cái", "gia": "150.000" },
+            { "ten": "CB cóc thường + hộp", "don_vi": "cái", "gia": "120.000" },
+            { "ten": "Ống điện ruột gà phi 20", "don_vi": "mét", "gia": "6.000" },
+            { "ten": "Nẹp 2cm", "don_vi": "cây", "gia": "8.000" },
+            { "ten": "Nẹp 3cm", "don_vi": "cây", "gia": "12.000" }
+          ]
+        }
+      ]
+    }
+  ]
+}
