@@ -18,6 +18,7 @@ import '../../features/home/presentation/price_group_screen.dart';
 import '../../features/home/presentation/price_detail_screen.dart';
 import '../../features/home/presentation/news_list_screen.dart';
 import '../../features/home/presentation/news_detail_screen.dart';
+import '../../features/home/presentation/notifications_screen.dart';
 import '../../data/services/menu_service.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -133,6 +134,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           return NewsDetailScreen(id: id);
         },
       ),
+      GoRoute(
+        path: '/notifications',
+        builder: (context, state) => const NotificationsScreen(),
+      ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final loggingIn = state.matchedLocation == '/login';
@@ -152,6 +157,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                     state.uri.path.startsWith('/price');
       final news = state.matchedLocation.startsWith('/news') ||
                    state.uri.path.startsWith('/news');
+      final notifications = state.matchedLocation == '/notifications' ||
+                           state.uri.path == '/notifications';
 
       return authState.when(
         data: (authStateValue) {
@@ -164,8 +171,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
           final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword || congratulations;
 
-          // Allow service-menu, quick-booking, booking-success, chat, price, news for authenticated users
-          if ((serviceMenu || quickBooking || bookingSuccess || chat || price || news) && loggedIn) {
+          // Allow service-menu, quick-booking, booking-success, chat, price, news, notifications for authenticated users
+          if ((serviceMenu || quickBooking || bookingSuccess || chat || price || news || notifications) && loggedIn) {
             return null;
           }
 

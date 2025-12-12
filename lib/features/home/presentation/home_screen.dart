@@ -138,6 +138,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               backgroundColor: Colors.transparent, // Để gradient hiển thị rõ
               floating: true,
               snap: true,
+              automaticallyImplyLeading: false, // Ẩn mũi tên back
               expandedHeight: 130.0,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(
@@ -254,7 +255,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               _buildIconWithBadge(
                 icon: Icons.notifications_outlined,
                 badgeCount: '38',
-                onPressed: () {},
+                onPressed: () {
+                  context.push('/notifications');
+                },
               ),
               const SizedBox(width: 8),
               // Message Icon
