@@ -452,12 +452,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildServiceItem(String title, String imagePath, String? serviceKey) {
     return GestureDetector(
       onTap: () {
-        if (serviceKey != null && serviceKey != 'DichVuKhac' && serviceKey != 'BangGia' && serviceKey != 'TinTuc') {
+        if (serviceKey != null &&
+            serviceKey != 'DichVuKhac' &&
+            serviceKey != 'BangGia' &&
+            serviceKey != 'TinTuc') {
           _openServiceBottomSheet(context, serviceKey, title);
         } else if (serviceKey == 'BangGia') {
           context.push('/price');
+        } else if (serviceKey == 'DichVuKhac') {
+          final uri = Uri(
+            path: '/quick-booking',
+            queryParameters: {'serviceName': title},
+          );
+          context.push(uri.toString());
+        } else if (serviceKey == 'TinTuc') {
+          context.push('/news');
         } else {
-          // Handle special services (DichVuKhac, BangGia, TinTuc)
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Tính năng $title sẽ được cập nhật sớm')),
           );

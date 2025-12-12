@@ -16,6 +16,8 @@ import '../../features/home/presentation/chat_detail_screen.dart';
 import '../../features/home/presentation/price_list_screen.dart';
 import '../../features/home/presentation/price_group_screen.dart';
 import '../../features/home/presentation/price_detail_screen.dart';
+import '../../features/home/presentation/news_list_screen.dart';
+import '../../features/home/presentation/news_detail_screen.dart';
 import '../../data/services/menu_service.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -120,6 +122,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
         },
       ),
+      GoRoute(
+        path: '/news',
+        builder: (context, state) => const NewsListScreen(),
+      ),
+      GoRoute(
+        path: '/news/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id'] ?? '';
+          return NewsDetailScreen(id: id);
+        },
+      ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final loggingIn = state.matchedLocation == '/login';
@@ -137,6 +150,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                    state.uri.path.startsWith('/chat');
       final price = state.matchedLocation.startsWith('/price') ||
                     state.uri.path.startsWith('/price');
+      final news = state.matchedLocation.startsWith('/news') ||
+                   state.uri.path.startsWith('/news');
 
       return authState.when(
         data: (authStateValue) {
@@ -149,8 +164,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
           final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword || congratulations;
 
-          // Allow service-menu, quick-booking, booking-success, chat, price for authenticated users
-          if ((serviceMenu || quickBooking || bookingSuccess || chat || price) && loggedIn) {
+          // Allow service-menu, quick-booking, booking-success, chat, price, news for authenticated users
+          if ((serviceMenu || quickBooking || bookingSuccess || chat || price || news) && loggedIn) {
             return null;
           }
 
