@@ -125,20 +125,6 @@ class ApiAuthRepository implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    // Mock credentials for development/testing
-    if (kDebugMode && email == 'user@gmail.com' && password == '123456') {
-      await Future.delayed(const Duration(seconds: 1));
-      final mockTokens = Tokens(
-        accessToken: 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
-        refreshToken: 'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
-      );
-      await _tokenStorageService.saveTokens(mockTokens);
-      return (
-        const User(id: '1', name: 'User', email: 'user@gmail.com'),
-        mockTokens,
-      );
-    }
-
     try {
       final headers = await _getHeaders();
       

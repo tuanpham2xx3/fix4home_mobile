@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../application/auth_controller.dart';
+import '../domain/auth_state.dart';
 import '../../../core/widgets/loading_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -43,10 +44,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
+  String? _getErrorMessage(AsyncValue<AuthState> authState) {
+    return authState.whenOrNull(
+      error: (error, stackTrace) {
+        if (error is Exception) {
+          return error.toString().replaceFirst('Exception: ', '');
+        } else {
+          return error.toString();
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
+    final errorMessage = _getErrorMessage(authState);
 
     // Listen for auth state changes
     ref.listen(authControllerProvider, (_, state) {
@@ -63,16 +77,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         },
         error: (error, stackTrace) {
           if (mounted) {
-            String errorMessage = 'Đã xảy ra lỗi';
+            String errorMsg = 'Đã xảy ra lỗi';
             if (error is Exception) {
-              errorMessage = error.toString().replaceFirst('Exception: ', '');
+              errorMsg = error.toString().replaceFirst('Exception: ', '');
             } else {
-              errorMessage = error.toString();
+              errorMsg = error.toString();
             }
             
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(errorMessage),
+                content: Text(errorMsg),
                 backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
                 duration: const Duration(seconds: 4),
@@ -123,35 +137,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Center(
                     child: SvgPicture.asset(
                       'assets/images/logo.svg',
-                      width: 120,
-                      height: 120,
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Brand name
-                  const Text(
-                    'FIXHOME',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF0C2C6C),
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Slogan
-                  const Text(
-                    'CHĂM SÓC NGÔI NHÀ CỦA BẠN',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF8AB2F2),
-                      fontWeight: FontWeight.w500,
+                      width: 200,
+                      height: 200,
                     ),
                   ),
 
@@ -293,6 +280,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     },
                   ),
 
+                  // Error message display
+                  if (errorMessage != null) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.red.shade200,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            color: Colors.red.shade700,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              errorMessage,
+                              style: TextStyle(
+                                color: Colors.red.shade700,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+
                   const SizedBox(height: 32),
 
                   // Login button
@@ -338,13 +364,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           color: Colors.black87,
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () => context.go('/register'),
-                        child: const Text(
+                      TextButton(
+                        onPressed: isLoading ? null : () {
+                          // Navigate to register screen
+                          if (mounted) {
+                            context.go('/register');
+                          }
+                        },
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 4,
+                          ),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
                           'Đăng ký ngay',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFFFF9800),
+                            color: isLoading 
+                                ? Colors.grey 
+                                : const Color(0xFFFF9800),
                             fontWeight: FontWeight.bold,
                           ),
                         ),

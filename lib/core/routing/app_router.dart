@@ -154,11 +154,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       final chat = state.matchedLocation.startsWith('/chat') ||
                    state.uri.path.startsWith('/chat');
       final price = state.matchedLocation.startsWith('/price') ||
-                    state.uri.path.startsWith('/price');
+                   state.uri.path.startsWith('/price');
       final news = state.matchedLocation.startsWith('/news') ||
                    state.uri.path.startsWith('/news');
       final notifications = state.matchedLocation == '/notifications' ||
                            state.uri.path == '/notifications';
+
+      final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword || congratulations;
 
       return authState.when(
         data: (authStateValue) {
@@ -169,7 +171,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             unauthenticated: () => false,
             error: (_) => false,
           );
-          final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword || congratulations;
 
           // Allow service-menu, quick-booking, booking-success, chat, price, news, notifications for authenticated users
           if ((serviceMenu || quickBooking || bookingSuccess || chat || price || news || notifications) && loggedIn) {
@@ -187,7 +188,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           return null;
         },
         loading: () => '/splash',
-        error: (_, __) => '/login',
+        error: (_, __) {
+          // Allow navigation to public pages even when in error state
+          if (isPublicPage) {
+            return null;
+          }
+          // Otherwise redirect to login
+          return '/login';
+        },
       );
     },
   );
