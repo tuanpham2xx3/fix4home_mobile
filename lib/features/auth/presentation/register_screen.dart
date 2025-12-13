@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../application/auth_controller.dart';
+import '../domain/auth_state.dart';
 import '../../../core/widgets/loading_button.dart';
 import 'widgets/email_verification_modal.dart';
 
@@ -20,6 +21,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _lastActionWasRegister = false;
 
   @override
   void dispose() {
@@ -31,6 +33,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
+      print('🚀 REGISTER BUTTON CLICKED: Current route = ${GoRouterState.of(context).matchedLocation}');
+      setState(() {
+        _lastActionWasRegister = true;
+      });
       ref.read(authControllerProvider.notifier).register(
             '', // name is not required; send empty
             _emailController.text.trim(),
@@ -39,14 +45,37 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
   }
 
+  String? _getErrorMessage(AsyncValue<AuthState> authState) {
+    // Only show error if it occurred after a register action
+    if (!_lastActionWasRegister) {
+      return null;
+    }
+    return authState.whenOrNull(
+      error: (error, stackTrace) {
+        if (error is Exception) {
+          return error.toString().replaceFirst('Exception: ', '');
+        } else {
+          return error.toString();
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
+    final errorMessage = _getErrorMessage(authState);
 
     ref.listen(authControllerProvider, (previous, next) {
       next.whenOrNull(
         data: (authStateValue) {
+          // Reset flag on successful registration
+          if (mounted) {
+            setState(() {
+              _lastActionWasRegister = false;
+            });
+          }
           authStateValue.whenOrNull(
             unauthenticated: () {
               // Check if we just finished registration (previous was loading)
@@ -254,6 +283,45 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       return null;
                     },
                   ),
+
+                  // Error message display
+                  if (errorMessage != null) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.red.shade200,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            color: Colors.red.shade700,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              errorMessage,
+                              style: TextStyle(
+                                color: Colors.red.shade700,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
 
                   const SizedBox(height: 32),
 

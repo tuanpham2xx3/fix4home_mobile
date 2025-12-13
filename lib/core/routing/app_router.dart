@@ -28,11 +28,22 @@ class SplashScreen extends StatelessWidget {
 }
 
 
-final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authControllerProvider);
+// Create a listenable for auth state changes without rebuilding the router
+class AuthNotifier extends ChangeNotifier {
+  final Ref ref;
+  AuthNotifier(this.ref) {
+    ref.listen(authControllerProvider, (_, __) {
+      notifyListeners();
+    });
+  }
+}
 
+final authNotifierProvider = Provider<AuthNotifier>((ref) => AuthNotifier(ref));
+
+final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/home', // Changed to /home for debug mode
+    initialLocation: '/login', // Default to login screen
+    refreshListenable: ref.watch(authNotifierProvider),
     routes: [
       GoRoute(
         path: '/login',
@@ -140,30 +151,50 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
-      final loggingIn = state.matchedLocation == '/login';
-      final registering = state.matchedLocation == '/register';
-      final checkingEmail = state.matchedLocation == '/check-email';
-      final resettingPassword = state.matchedLocation.startsWith('/reset-password');
-      final congratulations = state.matchedLocation == '/congratulations';
-      final serviceMenu = state.matchedLocation.startsWith('/service-menu') || 
-                          state.uri.path.startsWith('/service-menu');
-      final quickBooking = state.matchedLocation == '/quick-booking' ||
-                          state.uri.path == '/quick-booking';
-      final bookingSuccess = state.matchedLocation == '/booking-success' ||
-                            state.uri.path == '/booking-success';
-      final chat = state.matchedLocation.startsWith('/chat') ||
-                   state.uri.path.startsWith('/chat');
-      final price = state.matchedLocation.startsWith('/price') ||
-                   state.uri.path.startsWith('/price');
-      final news = state.matchedLocation.startsWith('/news') ||
-                   state.uri.path.startsWith('/news');
-      final notifications = state.matchedLocation == '/notifications' ||
-                           state.uri.path == '/notifications';
+      // Get auth state inside redirect handler instead of watching it at router level
+      final authState = ref.read(authControllerProvider);
+      
+      // Get current path from both matchedLocation and uri.path for accuracy
+      final matchedLocation = state.matchedLocation;
+      final currentPath = state.uri.path;
+      
+      // DEBUG: Log every redirect attempt
+      print('🔍 ROUTER DEBUG: matchedLocation=$matchedLocation, currentPath=$currentPath, authState=${authState.runtimeType}');
+      
+      final loggingIn = matchedLocation == '/login' || currentPath == '/login';
+      final registering = matchedLocation == '/register' || currentPath == '/register';
+      final checkingEmail = matchedLocation == '/check-email' || currentPath == '/check-email';
+      final resettingPassword = matchedLocation.startsWith('/reset-password') || 
+                                currentPath.startsWith('/reset-password');
+      final congratulations = matchedLocation == '/congratulations' || 
+                             currentPath == '/congratulations';
+      final serviceMenu = matchedLocation.startsWith('/service-menu') || 
+                          currentPath.startsWith('/service-menu');
+      final quickBooking = matchedLocation == '/quick-booking' ||
+                          currentPath == '/quick-booking';
+      final bookingSuccess = matchedLocation == '/booking-success' ||
+                            currentPath == '/booking-success';
+      final chat = matchedLocation.startsWith('/chat') ||
+                   currentPath.startsWith('/chat');
+      final price = matchedLocation.startsWith('/price') ||
+                   currentPath.startsWith('/price');
+      final news = matchedLocation.startsWith('/news') ||
+                   currentPath.startsWith('/news');
+      final notifications = matchedLocation == '/notifications' ||
+                           currentPath == '/notifications';
 
       final isPublicPage = loggingIn || registering || checkingEmail || resettingPassword || congratulations;
 
       return authState.when(
         data: (authStateValue) {
+          // DISABLED: All automatic redirects for login/register screens
+          // Only manual navigation via buttons is allowed
+          print('🔍 DATA HANDLER: loggingIn=$loggingIn, registering=$registering');
+          if (loggingIn || registering) {
+            print('✅ STAYING on login/register screen - NO REDIRECT');
+            return null;  // NEVER redirect from login or register
+          }
+          
           final loggedIn = authStateValue.when(
             initial: () => false,
             loading: () => false,
@@ -172,28 +203,38 @@ final routerProvider = Provider<GoRouter>((ref) {
             error: (_) => false,
           );
 
-          // Allow service-menu, quick-booking, booking-success, chat, price, news, notifications for authenticated users
+          // Allow authenticated users to access protected screens
           if ((serviceMenu || quickBooking || bookingSuccess || chat || price || news || notifications) && loggedIn) {
             return null;
           }
 
+          // SIMPLIFIED: Only redirect non-authenticated users away from protected pages
+          // But NEVER touch public pages (login, register, etc)
           if (!loggedIn && !isPublicPage) {
             return '/login';
           }
 
-          if (loggedIn && (loggingIn || registering)) {
-            return '/home';
-          }
-
           return null;
         },
-        loading: () => '/splash',
-        error: (_, __) {
-          // Allow navigation to public pages even when in error state
-          if (isPublicPage) {
+        loading: () {
+          // DISABLED: Never redirect during loading if on login/register
+          print('🔍 LOADING HANDLER: loggingIn=$loggingIn, registering=$registering');
+          if (loggingIn || registering) {
+            print('✅ STAYING on login/register screen during loading - NO REDIRECT');
             return null;
           }
-          // Otherwise redirect to login
+          print('⚠️ Redirecting to splash');
+          return '/splash';
+        },
+        error: (_, __) {
+          // DISABLED: Never redirect on error if on any public page
+          print('🔍 ERROR HANDLER: isPublicPage=$isPublicPage, registering=$registering');
+          if (isPublicPage) {
+            print('✅ STAYING on public page on error - NO REDIRECT');
+            return null;
+          }
+          // Only redirect if on a protected page
+          print('⚠️ Error on protected page, redirecting to login');
           return '/login';
         },
       );

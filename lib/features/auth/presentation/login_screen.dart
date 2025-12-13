@@ -18,6 +18,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _lastActionWasLogin = false;
 
   @override
   void dispose() {
@@ -28,6 +29,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _lastActionWasLogin = true;
+      });
       ref.read(authControllerProvider.notifier).login(
             _emailController.text.trim(),
             _passwordController.text,
@@ -45,6 +49,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   String? _getErrorMessage(AsyncValue<AuthState> authState) {
+    // Only show error if it occurred after a login action
+    if (!_lastActionWasLogin) {
+      return null;
+    }
     return authState.whenOrNull(
       error: (error, stackTrace) {
         if (error is Exception) {
@@ -66,6 +74,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ref.listen(authControllerProvider, (_, state) {
       state.whenOrNull(
         data: (authStateValue) {
+          // Reset flag on successful login
+          if (mounted) {
+            setState(() {
+              _lastActionWasLogin = false;
+            });
+          }
           authStateValue.whenOrNull(
             authenticated: (_) {
               // Navigate to home on successful login

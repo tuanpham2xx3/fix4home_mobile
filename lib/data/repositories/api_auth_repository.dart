@@ -93,18 +93,9 @@ class ApiAuthRepository implements AuthRepository {
       final responseData = response.data as Map<String, dynamic>;
       final authResponse = _parseAuthResponse(responseData);
       
-      // Save tokens if available
-      if (authResponse.refreshToken != null && authResponse.refreshToken!.isNotEmpty) {
-        await _tokenStorageService.saveTokens(
-          Tokens(
-            accessToken: authResponse.accessToken,
-            refreshToken: authResponse.refreshToken!,
-          ),
-        );
-      } else {
-        // For web (no refreshToken), only save accessToken
-        await _tokenStorageService.saveAccessToken(authResponse.accessToken);
-      }
+      // IMPORTANT: Do NOT save tokens after registration
+      // User needs to verify email first before being logged in
+      // Tokens will only be saved after successful login
 
       return (
         authResponse.user,

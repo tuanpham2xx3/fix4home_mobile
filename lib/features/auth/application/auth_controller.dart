@@ -113,14 +113,18 @@ class AuthController extends AsyncNotifier<AuthState> {
   Future<void> register(String name, String email, String password) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
+      // IMPORTANT: Clear any existing tokens before registration
+      // This prevents old tokens from causing auto-login after registration
+      await _tokenStorageService.clearTokens();
+      
       await _authRepository.register(
         name: name,
         email: email,
         password: password,
       );
-      // Tokens are already saved in ApiAuthRepository
       // After registration, the user needs to verify email,
       // so we don't log them in immediately.
+      // Tokens will NOT be saved until successful login.
       return const AuthState.unauthenticated();
     });
   }

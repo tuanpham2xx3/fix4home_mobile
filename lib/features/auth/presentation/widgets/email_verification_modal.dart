@@ -39,19 +39,15 @@ class _EmailVerificationModalState
   bool _isResending = false;
 
   Future<void> _verifyActivation() async {
-    // Nếu có token từ response đăng ký, sử dụng nó
-    // Nếu không, thông báo user cần click link trong email
+    // Nếu có token từ response đăng ký, sử dụng nó để verify
+    // Nếu không có token, giả định user đã click link trong email và chuyển đến congratulations
     if (widget.activationToken == null || widget.activationToken!.isEmpty) {
-      // Không có token, thông báo user cần click link trong email
+      // Không có token, nhưng user click "Đã ấn liên kết"
+      // Giả định họ đã kích hoạt tài khoản qua email
+      // Đóng modal và chuyển đến màn hình chúc mừng
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Vui lòng kiểm tra email và ấn vào liên kết để kích hoạt tài khoản. Nếu bạn đã ấn vào liên kết, tài khoản sẽ được kích hoạt tự động.'),
-            backgroundColor: Colors.orange,
-            duration: Duration(seconds: 5),
-          ),
-        );
+        Navigator.of(context).pop();
+        context.go('/congratulations');
       }
       return;
     }
