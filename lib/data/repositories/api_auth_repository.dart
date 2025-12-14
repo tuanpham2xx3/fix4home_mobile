@@ -5,6 +5,7 @@ import '../../domain/models/tokens.dart';
 import '../../domain/models/auth_response.dart';
 import '../../domain/models/refresh_token_response.dart';
 import '../../domain/models/verify_activation_token_response.dart';
+import '../../domain/models/check_activation_status_response.dart';
 import '../../domain/models/send_verification_email_request.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../core/config/api_config.dart';
@@ -273,6 +274,57 @@ class ApiAuthRepository implements AuthRepository {
         rethrow;
       }
       throw Exception('Kiểm tra token thất bại: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<CheckActivationStatusResponse> checkActivationStatus({
+    required String email,
+  }) async {
+    try {
+      final headers = await _getHeaders();
+      
+      // GET request với query parameter email
+      final response = await _dio.get(
+        ApiConfig.checkActivationStatusEndpoint,
+        queryParameters: {'email': email},
+        options: Options(headers: headers),
+      );
+
+      // Backend trả về { success, message, data }
+      final responseData = response.data as Map<String, dynamic>;
+      
+      if (responseData['success'] != true) {
+        final message = responseData['message'] ?? 
+                       responseData['userMessage'] ?? 
+                       'Kiểm tra trạng thái kích hoạt thất bại';
+        throw Exception(message);
+      }
+      
+      // Lấy data object
+      if (responseData['data'] == null) {
+        throw Exception('Response data is null');
+      }
+      
+      final data = responseData['data'] as Map<String, dynamic>;
+      
+      return CheckActivationStatusResponse(
+        email: data['email'] as String,
+        userId: data['userId'] as int,
+        userStatus: data['userStatus'] as String,
+        isActivated: data['isActivated'] as bool,
+        hasActiveToken: data['hasActiveToken'] as bool?,
+        tokenExpiresAt: data['tokenExpiresAt'] as String?,
+        canResend: data['canResend'] as bool?,
+        lastSentAt: data['lastSentAt'] as String?,
+      );
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('Kiểm tra trạng thái kích hoạt thất bại: ${e.toString()}');
     }
   }
 

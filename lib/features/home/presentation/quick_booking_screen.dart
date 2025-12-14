@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -240,16 +239,27 @@ class _QuickBookingScreenState extends ConsumerState<QuickBookingScreen> {
     return days;
   }
 
-  String _generateBookingId() {
-    final now = DateTime.now();
-    final random = Random().nextInt(10000);
-    return '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}${random.toString().padLeft(5, '0')}';
-  }
+  bool _isSubmitting = false;
 
-  void _submitBooking() {
-    if (_formKey.currentState!.validate() && _isFormValid) {
-      // Create booking
-      final bookingId = _generateBookingId();
+  Future<void> _submitBooking() async {
+    if (!_formKey.currentState!.validate() || !_isFormValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Vui lòng điền đầy đủ thông tin bắt buộc'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (_isSubmitting) return; // Prevent double submission
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      // Build booking date
       final bookingDate = DateTime(
         _selectedDate!.year,
         _selectedDate!.month,
@@ -257,35 +267,76 @@ class _QuickBookingScreenState extends ConsumerState<QuickBookingScreen> {
         _selectedTime!.hour,
         _selectedTime!.minute,
       );
-      
-      // Format address: only show ward/district/province (like in the image)
-      final address = _selectedWard != null 
-          ? _selectedWard!.pathWithType
-          : _streetAddressController.text.trim();
-      
-      final booking = Booking(
-        id: bookingId,
-        title: _jobContentController.text.trim(),
-        address: address,
-        date: bookingDate,
-        status: BookingStatus.pending,
-        notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
-        phone: _phoneController.text.trim(),
-        name: _nameController.text.trim(),
-      );
 
-      // Save booking
-      ref.read(bookingProvider.notifier).addBooking(booking);
+      // Format address: Combine street address + ward path
+      final streetAddress = _streetAddressController.text.trim();
+      final wardPath = _selectedWard?.pathWithType ?? '';
+      final address = wardPath.isNotEmpty
+          ? '$streetAddress, $wardPath'
+          : streetAddress;
 
-      // Navigate to success screen
-      context.pushReplacement('/booking-success');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Vui lòng điền đầy đủ thông tin bắt buộc'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      // Format phone: Remove +84 prefix if present
+      String phone = _phoneController.text.trim();
+      if (phone.startsWith('+84')) {
+        phone = phone.substring(3);
+      } else if (phone.startsWith('84') && phone.length > 9) {
+        phone = phone.substring(2);
+      }
+
+      // Format date as ISO8601 (YYYY-MM-DDTHH:mm:ss)
+      final dateStr = '${bookingDate.year.toString().padLeft(4, '0')}-'
+          '${bookingDate.month.toString().padLeft(2, '0')}-'
+          '${bookingDate.day.toString().padLeft(2, '0')}T'
+          '${bookingDate.hour.toString().padLeft(2, '0')}:'
+          '${bookingDate.minute.toString().padLeft(2, '0')}:00';
+
+      // Build API payload
+      final bookingData = <String, dynamic>{
+        'title': _jobContentController.text.trim(),
+        'address': address,
+        'date': dateStr,
+        'phone': phone,
+        'name': _nameController.text.trim(),
+      };
+
+      // Add optional fields
+      final notes = _notesController.text.trim();
+      if (notes.isNotEmpty) {
+        bookingData['notes'] = notes;
+      }
+
+      if (_selectedWard != null && _selectedWard!.code.isNotEmpty) {
+        bookingData['wardCode'] = _selectedWard!.code;
+      }
+
+      if (_needsSurvey) {
+        bookingData['needsSurvey'] = true;
+      }
+
+      // Submit booking via API
+      await ref.read(bookingProvider.notifier).addBooking(bookingData);
+
+      // Navigate to success screen only on success
+      if (mounted) {
+        context.pushReplacement('/booking-success');
+      }
+    } catch (e) {
+      // Show error message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi khi đặt lịch: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
     }
   }
 
@@ -1092,9 +1143,9 @@ class _QuickBookingScreenState extends ConsumerState<QuickBookingScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _isFormValid ? _submitBooking : null,
+                  onPressed: (_isFormValid && !_isSubmitting) ? _submitBooking : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _isFormValid
+                    backgroundColor: (_isFormValid && !_isSubmitting)
                         ? const Color(0xFFFFC107)
                         : Colors.grey[300],
                     foregroundColor: Colors.white,
@@ -1103,13 +1154,22 @@ class _QuickBookingScreenState extends ConsumerState<QuickBookingScreen> {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    'Đặt lịch ngay',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text(
+                          'Đặt lịch ngay',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
             ),

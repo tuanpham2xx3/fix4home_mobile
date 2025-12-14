@@ -13,5 +13,11 @@ class ApiConfig {
   static const String activateEndpoint = '/api/v1/auth/activate'; // /{token}
   static const String verifyActivationTokenEndpoint = '/api/v1/auth/verify-activation-token';
   static const String resendActivationLinkEndpoint = '/api/v1/auth/resend-activation-link';
+  static const String checkActivationStatusEndpoint = '/api/v1/auth/check-activation-status';
+  
+  // Booking endpoints
+  static const String bookingsEndpoint = '/api/v1/bookings';
+  static String bookingByIdEndpoint(int id) => '/api/v1/bookings/$id';
+  static String cancelBookingEndpoint(int id) => '/api/v1/bookings/$id/cancel';
 }
 

@@ -5,6 +5,7 @@ import '../domain/auth_state.dart';
 import '../../../data/repositories/api_auth_repository.dart';
 import '../../../domain/models/user.dart';
 import '../../../domain/models/verify_activation_token_response.dart';
+import '../../../domain/models/check_activation_status_response.dart';
 import '../../../core/services/token_storage_service.dart';
 import '../../../core/services/api_client.dart';
 import '../../../core/services/device_id_service.dart';
@@ -179,5 +180,9 @@ class AuthController extends AsyncNotifier<AuthState> {
       // Tokens are already saved in ApiAuthRepository
       return AuthState.authenticated(user: user);
     });
+  }
+
+  Future<CheckActivationStatusResponse> checkActivationStatus(String email) async {
+    return await _authRepository.checkActivationStatus(email: email);
   }
 }

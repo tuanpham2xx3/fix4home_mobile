@@ -7,11 +7,13 @@ import '../../../../core/widgets/loading_button.dart';
 class EmailVerificationModal extends ConsumerStatefulWidget {
   final String email;
   final String? activationToken; // Token từ response đăng ký hoặc null
+  final BuildContext parentContext; // Context của parent screen để hiển thị SnackBar
 
   const EmailVerificationModal({
     super.key,
     required this.email,
     this.activationToken,
+    required this.parentContext,
   });
 
   @override
@@ -25,9 +27,10 @@ class EmailVerificationModal extends ConsumerStatefulWidget {
       barrierColor: Colors.black.withValues(alpha: 0.5),
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => EmailVerificationModal(
+      builder: (modalContext) => EmailVerificationModal(
         email: email,
         activationToken: activationToken,
+        parentContext: context, // Lưu parent context
       ),
     );
   }
@@ -37,48 +40,57 @@ class _EmailVerificationModalState
     extends ConsumerState<EmailVerificationModal> {
   bool _isVerifying = false;
   bool _isResending = false;
+  String? _errorMessage; // Error message hiển thị trong modal
 
   Future<void> _verifyActivation() async {
-    // Nếu có token từ response đăng ký, sử dụng nó để verify
-    // Nếu không có token, giả định user đã click link trong email và chuyển đến congratulations
-    if (widget.activationToken == null || widget.activationToken!.isEmpty) {
-      // Không có token, nhưng user click "Đã ấn liên kết"
-      // Giả định họ đã kích hoạt tài khoản qua email
-      // Đóng modal và chuyển đến màn hình chúc mừng
-      if (mounted) {
-        Navigator.of(context).pop();
-        context.go('/congratulations');
-      }
-      return;
-    }
-
     setState(() {
       _isVerifying = true;
+      _errorMessage = null; // Clear error message khi bắt đầu verify
     });
 
     try {
-      final response = await ref
-          .read(authControllerProvider.notifier)
-          .verifyActivationToken(widget.activationToken!);
+      // Nếu có token từ response đăng ký, sử dụng nó để verify
+      if (widget.activationToken != null && widget.activationToken!.isNotEmpty) {
+        final response = await ref
+            .read(authControllerProvider.notifier)
+            .verifyActivationToken(widget.activationToken!);
 
-      if (mounted) {
-        // Kiểm tra userStatus để xem đã kích hoạt chưa
-        // Các trạng thái có thể: PENDING, ACTIVE, VERIFIED, INACTIVE, etc.
-        if (response.userStatus.toUpperCase() == 'ACTIVE' ||
-            response.userStatus.toUpperCase() == 'VERIFIED') {
-          // Đóng modal và chuyển đến màn hình chúc mừng
-          Navigator.of(context).pop();
-          context.go('/congratulations');
-        } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                    'Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email và ấn vào liên kết.'),
-                backgroundColor: Colors.orange,
-                duration: Duration(seconds: 4),
-              ),
-            );
+        if (mounted) {
+          // Kiểm tra userStatus để xem đã kích hoạt chưa
+          if (response.userStatus.toUpperCase() == 'ACTIVE' ||
+              response.userStatus.toUpperCase() == 'VERIFIED') {
+            // Đóng modal và chuyển đến màn hình chúc mừng
+            Navigator.of(context).pop();
+            context.go('/congratulations');
+          } else {
+            // Chưa kích hoạt → Hiển thị error message trong modal
+            if (mounted) {
+              setState(() {
+                _errorMessage = 'Tài khoản chưa được kích hoạt, vui lòng kiểm tra hòm thư.';
+              });
+            }
+          }
+        }
+      } else {
+        // Không có token, gọi API check activation status với email
+        final statusResponse = await ref
+            .read(authControllerProvider.notifier)
+            .checkActivationStatus(widget.email);
+
+        if (mounted) {
+          // Kiểm tra xem tài khoản đã được kích hoạt chưa
+          if (statusResponse.isActivated || 
+              statusResponse.userStatus.toUpperCase() == 'ACTIVE') {
+            // Đã kích hoạt → Đóng modal và chuyển đến màn hình chúc mừng
+            Navigator.of(context).pop();
+            context.go('/congratulations');
+          } else {
+            // Chưa kích hoạt → Hiển thị error message trong modal
+            if (mounted) {
+              setState(() {
+                _errorMessage = 'Tài khoản chưa được kích hoạt, vui lòng kiểm tra hòm thư.';
+              });
+            }
           }
         }
       }
@@ -196,6 +208,45 @@ class _EmailVerificationModalState
               onPressed: _verifyActivation,
               isLoading: _isVerifying,
             ),
+
+            // Error message hiển thị dưới button
+            if (_errorMessage != null) ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Colors.red.shade200,
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: Colors.red.shade700,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        _errorMessage!,
+                        style: TextStyle(
+                          color: Colors.red.shade700,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
 
             const SizedBox(height: 16),
 

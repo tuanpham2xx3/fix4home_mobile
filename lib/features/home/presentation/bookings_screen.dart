@@ -33,23 +33,35 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(context);
-              await ref.read(bookingProvider.notifier).cancelBooking(bookingId);
-              
-              // Navigate to home and switch to home tab
-              if (context.mounted) {
-                ref.read(selectedIndexProvider.notifier).state = 0;
-                context.go('/home');
+              try {
+                final bookingIdInt = int.parse(bookingId);
+                await ref.read(bookingProvider.notifier).cancelBooking(bookingIdInt);
                 
-                // Show success notification after navigation
-                Future.delayed(const Duration(milliseconds: 300), () {
-                  ref.read(notificationProvider.notifier).showNotification(
-                    NotificationMessage(
-                      title: 'Thành công',
-                      message: 'Huỷ lịch hẹn thành công!',
-                      type: NotificationType.success,
+                // Navigate to home and switch to home tab
+                if (context.mounted) {
+                  ref.read(selectedIndexProvider.notifier).state = 0;
+                  context.go('/home');
+                  
+                  // Show success notification after navigation
+                  Future.delayed(const Duration(milliseconds: 300), () {
+                    ref.read(notificationProvider.notifier).showNotification(
+                      NotificationMessage(
+                        title: 'Thành công',
+                        message: 'Huỷ lịch hẹn thành công!',
+                        type: NotificationType.success,
+                      ),
+                    );
+                  });
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Lỗi khi hủy lịch: ${e.toString()}'),
+                      backgroundColor: Colors.red,
                     ),
                   );
-                });
+                }
               }
             },
             style: ElevatedButton.styleFrom(
@@ -65,11 +77,25 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bookings = ref.watch(bookingProvider);
-    final pendingBookings = bookings.where((b) => b.status == BookingStatus.pending).toList();
-    final completedBookings = bookings.where((b) => b.status == BookingStatus.completed).toList();
+    final bookingsAsync = ref.watch(bookingProvider);
     
-    final displayedBookings = _selectedTab == 0 ? pendingBookings : completedBookings;
+    return bookingsAsync.when(
+      data: (bookings) {
+        // Tab "Đã đặt" hiển thị cả pending và cancelled
+        final pendingBookings = bookings.where((b) => 
+          b.status == BookingStatus.pending || b.status == BookingStatus.cancelled
+        ).toList();
+        final completedBookings = bookings.where((b) => b.status == BookingStatus.completed).toList();
+        final displayedBookings = _selectedTab == 0 ? pendingBookings : completedBookings;
+        
+        return _buildContent(displayedBookings);
+      },
+      loading: () => _buildContent([]),
+      error: (error, stack) => _buildError(error),
+    );
+  }
+
+  Widget _buildContent(List<Booking> displayedBookings) {
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -186,6 +212,67 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen> {
                         return _buildBookingCard(booking);
                       },
                     ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError(Object error) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            const GradientHeader(
+              title: 'Lịch sử công việc',
+            ),
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error_outline,
+                      size: 64,
+                      color: Colors.red,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Lỗi khi tải dữ liệu',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        error.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: () {
+                        ref.read(bookingProvider.notifier).refreshBookings();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFFC107),
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Thử lại'),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
