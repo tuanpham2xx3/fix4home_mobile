@@ -6,17 +6,22 @@ import '../../../core/widgets/gradient_header.dart';
 import '../../../data/services/news_service.dart';
 import '../../../domain/models/news_article.dart';
 
-final newsServiceProvider = Provider<NewsService>((ref) => NewsService());
-
 final newsQueryProvider = StateProvider<String>((ref) => '');
+final newsPageProvider = StateProvider<int>((ref) => 0);
+final newsLimitProvider = StateProvider<int>((ref) => 10);
 
-final filteredNewsProvider = FutureProvider<List<NewsArticle>>((ref) async {
-  final query = ref.watch(newsQueryProvider);
+final filteredNewsProvider =
+    FutureProvider.family<ArticleListResponse, Map<String, dynamic>>((ref, params) async {
+  final query = params['query'] as String;
+  final page = params['page'] as int;
+  final limit = params['limit'] as int;
   final service = ref.watch(newsServiceProvider);
+
   if (query.isEmpty) {
-    return service.getAllNews();
+    return service.getAllNews(page: page, limit: limit);
+  } else {
+    return service.searchNews(query, page: page, limit: limit);
   }
-  return service.searchNews(query);
 });
 
 class NewsListScreen extends ConsumerStatefulWidget {
@@ -28,16 +33,108 @@ class NewsListScreen extends ConsumerStatefulWidget {
 
 class _NewsListScreenState extends ConsumerState<NewsListScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  final List<NewsArticle> _allArticles = [];
+  bool _isLoadingMore = false;
+  bool _hasMore = true;
+  int _currentPage = 0;
+  String _currentQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent * 0.8 &&
+        !_isLoadingMore &&
+        _hasMore) {
+      _loadMore();
+    }
+  }
+
+  void _loadMore() async {
+    if (_isLoadingMore || !_hasMore) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    try {
+      final nextPage = _currentPage + 1;
+      final limit = ref.read(newsLimitProvider);
+      final query = ref.read(newsQueryProvider);
+
+      final service = ref.read(newsServiceProvider);
+      ArticleListResponse response;
+
+      if (query.isEmpty) {
+        response = await service.getAllNews(page: nextPage, limit: limit);
+      } else {
+        response = await service.searchNews(query, page: nextPage, limit: limit);
+      }
+
+      setState(() {
+        _allArticles.addAll(response.articles);
+        _currentPage = nextPage;
+        _hasMore = nextPage < response.totalPages - 1;
+        _isLoadingMore = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingMore = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Lỗi tải thêm bài viết: $e')),
+        );
+      }
+    }
+  }
+
+  void _onSearchChanged(String value) {
+    ref.read(newsQueryProvider.notifier).state = value;
+    setState(() {
+      _allArticles.clear();
+      _currentPage = 0;
+      _hasMore = true;
+      _currentQuery = value;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final newsAsync = ref.watch(filteredNewsProvider);
+    final query = ref.watch(newsQueryProvider);
+    final limit = ref.watch(newsLimitProvider);
+
+    // Reset state when query changes
+    if (query != _currentQuery) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _allArticles.clear();
+          _currentPage = 0;
+          _hasMore = true;
+          _currentQuery = query;
+        });
+      });
+    }
+
+    final newsAsync = ref.watch(
+      filteredNewsProvider({
+        'query': query,
+        'page': 0,
+        'limit': limit,
+      }),
+    );
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -54,25 +151,69 @@ class _NewsListScreenState extends ConsumerState<NewsListScreen> {
             ),
             Expanded(
               child: newsAsync.when(
-                data: (articles) {
-                  if (articles.isEmpty) {
+                data: (response) {
+                  // Update articles list on first load or when query changes
+                  if (_currentPage == 0 || query != _currentQuery) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (mounted) {
+                        setState(() {
+                          _allArticles.clear();
+                          _allArticles.addAll(response.articles);
+                          _currentPage = response.page;
+                          _hasMore = response.page < response.totalPages - 1;
+                          _currentQuery = query;
+                        });
+                      }
+                    });
+                  }
+
+                  if (_allArticles.isEmpty && !_isLoadingMore) {
                     return const Center(child: Text('Chưa có tin tức'));
                   }
+
                   return ListView.separated(
+                    controller: _scrollController,
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                     itemBuilder: (context, index) {
-                      final article = articles[index];
-                      return _NewsCard(article: article);
+                      if (index < _allArticles.length) {
+                        final article = _allArticles[index];
+                        return _NewsCard(article: article);
+                      } else if (_isLoadingMore) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
                     },
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemCount: articles.length,
+                    itemCount: _allArticles.length + (_isLoadingMore ? 1 : 0),
                   );
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (err, _) => Center(
-                  child: Text(
-                    'Lỗi tải tin tức',
-                    style: TextStyle(color: Colors.red[700]),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Lỗi tải tin tức',
+                        style: TextStyle(color: Colors.red[700]),
+                      ),
+                      const SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          ref.invalidate(filteredNewsProvider({
+                            'query': query,
+                            'page': 0,
+                            'limit': limit,
+                          }));
+                        },
+                        child: const Text('Thử lại'),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -90,7 +231,7 @@ class _NewsListScreenState extends ConsumerState<NewsListScreen> {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
@@ -98,9 +239,7 @@ class _NewsListScreenState extends ConsumerState<NewsListScreen> {
       ),
       child: TextField(
         controller: _searchController,
-        onChanged: (value) {
-          ref.read(newsQueryProvider.notifier).state = value;
-        },
+        onChanged: _onSearchChanged,
         decoration: const InputDecoration(
           prefixIcon: Icon(Icons.search, color: Colors.grey),
           hintText: 'Tìm kiếm tin tức...',
@@ -130,7 +269,7 @@ class _NewsCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _NewsThumbnail(imagePath: article.imageUrl),
+              _NewsThumbnail(imageUrl: article.imageUrl),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -185,9 +324,9 @@ class _NewsCard extends StatelessWidget {
 }
 
 class _NewsThumbnail extends StatelessWidget {
-  final String imagePath;
+  final String imageUrl;
 
-  const _NewsThumbnail({required this.imagePath});
+  const _NewsThumbnail({required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -197,15 +336,20 @@ class _NewsThumbnail extends StatelessWidget {
         width: 110,
         height: 110,
         color: Colors.grey[200],
-        child: Image.asset(
-          imagePath,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return const Icon(Icons.image_not_supported, color: Colors.grey);
-          },
-        ),
+        child: imageUrl.isNotEmpty
+            ? Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.image_not_supported, color: Colors.grey);
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(child: CircularProgressIndicator());
+                },
+              )
+            : const Icon(Icons.image_not_supported, color: Colors.grey),
       ),
     );
   }
 }
-

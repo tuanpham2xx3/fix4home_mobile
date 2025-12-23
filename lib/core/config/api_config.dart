@@ -43,6 +43,11 @@ class ApiConfig {
   // Chatbot endpoint
   static const String chatbotSendEndpoint = '/api/v1/chatbot/send';
 
+  // Article endpoints
+  static const String articlesEndpoint = '/api/v1/articles';
+  static const String articlesSearchEndpoint = '/api/v1/articles/search';
+  static String articleByIdEndpoint(int id) => '/api/v1/articles/$id';
+
   // WebSocket
   static const String webSocketPathNative = '/ws-native';
   
