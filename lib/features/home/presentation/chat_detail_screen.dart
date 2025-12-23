@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../application/message_provider.dart';
-import '../../../domain/models/message.dart';
-import '../../../domain/models/conversation.dart';
-import '../../../data/services/message_service.dart';
+import '../../../domain/models/chat_api_models.dart';
+import '../../../data/repositories/repository_providers.dart';
+import '../../../data/services/websocket_service.dart';
+import '../../../core/services/token_storage_service.dart';
+import '../../../core/config/api_config.dart';
+import '../../auth/application/auth_controller.dart';
 
 class ChatDetailScreen extends ConsumerStatefulWidget {
   final String conversationId;
@@ -22,23 +25,60 @@ class ChatDetailScreen extends ConsumerStatefulWidget {
 class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  Conversation? _conversation;
+  ConversationDTO? _conversation;
   bool _hasScrolledToBottom = false;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    _loadConversation();
+    _initializeChat();
   }
 
-  Future<void> _loadConversation() async {
-    final conversations = await MessageService().getConversations();
-    _conversation = conversations.firstWhere(
-      (c) => c.id == widget.conversationId,
-      orElse: () => conversations.first,
-    );
-    if (mounted) {
-      setState(() {});
+  Future<void> _initializeChat() async {
+    try {
+      // Parse conversation ID (could be int or string)
+      final convId = int.tryParse(widget.conversationId);
+      if (convId == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Conversation ID không hợp lệ')),
+          );
+        }
+        return;
+      }
+
+      // Load conversation
+      final conversationRepo = ref.read(conversationRepositoryProvider);
+      _conversation = await conversationRepo.getConversationById(convId);
+
+      // Initialize WebSocket connection
+      await _initWebSocket();
+
+      if (mounted) {
+        setState(() {
+          _isInitialized = true;
+        });
+      }
+      } catch (e) {
+        // Error initializing - could show error message
+      }
+  }
+
+  Future<void> _initWebSocket() async {
+    try {
+      final tokenStorage = ref.read(tokenStorageServiceProvider);
+      final tokens = await tokenStorage.getTokens();
+      if (tokens == null) return;
+
+      final wsService = ref.read(websocketServiceProvider);
+      final wsUrl = ApiConfig.getWebSocketUrl();
+
+      if (!wsService.isConnected) {
+        await wsService.connect(wsUrl, tokens.accessToken);
+      }
+    } catch (e) {
+      // Continue without WebSocket - messages will still work via REST
     }
   }
 
@@ -65,8 +105,11 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     final content = _messageController.text.trim();
     if (content.isEmpty) return;
 
+    final convId = int.tryParse(widget.conversationId);
+    if (convId == null) return;
+
     _messageController.clear();
-    final notifier = ref.read(messageNotifierProvider(widget.conversationId).notifier);
+    final notifier = ref.read(messageNotifierProvider(convId).notifier);
     await notifier.sendMessage(content);
     // Reset flag so we scroll after sending
     _hasScrolledToBottom = false;
@@ -75,11 +118,27 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final messagesAsync = ref.watch(messageNotifierProvider(widget.conversationId));
+    final convId = int.tryParse(widget.conversationId);
+    if (convId == null || !_isInitialized || _conversation == null) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black87),
+            onPressed: () => context.pop(),
+          ),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final messagesAsync = ref.watch(messageNotifierProvider(convId));
+    final otherParty = _conversation!.technician;
 
     // Scroll to bottom when messages are first loaded
-    ref.listen<AsyncValue<List<Message>>>(
-      messageNotifierProvider(widget.conversationId),
+    ref.listen<AsyncValue<List<MessageDTO>>>(
+      messageNotifierProvider(convId),
       (previous, next) {
         if (!_hasScrolledToBottom && next.hasValue && next.value!.isNotEmpty) {
           _hasScrolledToBottom = true;
@@ -89,14 +148,6 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
         }
       },
     );
-
-    if (_conversation == null) {
-      return Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    final seller = _conversation!.seller;
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -114,12 +165,12 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: _getAvatarColor(seller.name),
+                color: _getAvatarColor(otherParty.fullName),
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Text(
-                  _getInitials(seller.name),
+                  _getInitials(otherParty.fullName),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -134,13 +185,21 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    seller.username,
+                    otherParty.fullName,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.black87,
                     ),
                   ),
+                  if (_conversation!.conversationType == 'CHATBOT')
+                    Text(
+                      'Chatbot',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -170,18 +229,32 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                 }
                 return ListView.builder(
                   controller: _scrollController,
+                  reverse: true, // Show newest at bottom
                   padding: const EdgeInsets.all(16),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    return _buildMessageBubble(messages[index]);
+                    return _buildMessageBubble(messages[index], convId);
                   },
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stack) => Center(
-                child: Text(
-                  'Có lỗi xảy ra',
-                  style: TextStyle(color: Colors.grey[600]),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Có lỗi xảy ra: ${error.toString()}',
+                      style: TextStyle(color: Colors.grey[600]),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        ref.invalidate(messageNotifierProvider(convId));
+                      },
+                      child: const Text('Thử lại'),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -250,12 +323,35 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     );
   }
 
-  Widget _buildMessageBubble(Message message) {
-    final isUser = message.messageType == MessageType.user;
-    final timeFormat = DateFormat('HH:mm');
-    final timeText = timeFormat.format(message.timestamp);
+  Widget _buildMessageBubble(MessageDTO message, int conversationId) {
+    // Get current user ID from auth state
+    int? currentUserId;
+    final authState = ref.read(authControllerProvider);
+    
+    authState.when(
+      data: (state) {
+        state.when(
+          initial: () {},
+          loading: () {},
+          authenticated: (user) {
+            currentUserId = int.tryParse(user.id);
+          },
+          unauthenticated: () {},
+          error: (_) {},
+        );
+      },
+      loading: () {},
+      error: (_, __) {},
+    );
 
-    if (message.messageType == MessageType.system) {
+    // Determine if message is from current user
+    // Compare with conversation's customer ID as fallback
+    final isUser = (currentUserId != null && message.sender?.userId == currentUserId) ||
+        (_conversation != null && message.sender?.userId == _conversation!.customer.userId);
+    final timeFormat = DateFormat('HH:mm');
+    final timeText = timeFormat.format(message.sentAt);
+
+    if (message.messageType == 'SYSTEM') {
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         child: Center(
@@ -319,7 +415,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                     color: Colors.grey[500],
                   ),
                 ),
-                if (isUser && message.isDelivered) ...[
+                if (isUser && message.isRead) ...[
                   const SizedBox(width: 4),
                   Icon(
                     Icons.check,
@@ -364,4 +460,3 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     return colors[index.abs()];
   }
 }
-

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../application/message_provider.dart';
-import '../../../domain/models/conversation.dart';
+import '../../../domain/models/chat_api_models.dart';
 import '../../../core/widgets/gradient_header.dart';
 
 class MessagesScreen extends ConsumerWidget {
@@ -11,7 +11,8 @@ class MessagesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final conversationsAsync = ref.watch(conversationsProvider);
+    // Try API first, fallback to mock
+    final conversationsAsync = ref.watch(apiConversationsProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -58,18 +59,36 @@ class MessagesScreen extends ConsumerWidget {
                       ),
                     );
                   }
-                  return ListView.builder(
-                    itemCount: conversations.length,
-                    itemBuilder: (context, index) {
-                      return _buildConversationItem(context, ref, conversations[index]);
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      ref.invalidate(apiConversationsProvider);
                     },
+                    child: ListView.builder(
+                      itemCount: conversations.length,
+                      itemBuilder: (context, index) {
+                        return _buildConversationItem(context, ref, conversations[index]);
+                      },
+                    ),
                   );
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stack) => Center(
-                  child: Text(
-                    'Có lỗi xảy ra',
-                    style: TextStyle(color: Colors.grey[600]),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Có lỗi xảy ra: ${error.toString()}',
+                        style: TextStyle(color: Colors.grey[600]),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          ref.invalidate(apiConversationsProvider);
+                        },
+                        child: const Text('Thử lại'),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -80,12 +99,13 @@ class MessagesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildConversationItem(BuildContext context, WidgetRef ref, Conversation conversation) {
-    final seller = conversation.seller;
+  Widget _buildConversationItem(BuildContext context, WidgetRef ref, ConversationDTO conversation) {
+    // Use technician as the other party (for display)
+    final otherParty = conversation.technician;
     final dateFormat = DateFormat('dd/MM');
     final yearFormat = DateFormat('dd/MM/yy');
     final now = DateTime.now();
-    final lastMessageTime = conversation.lastMessageTime;
+    final lastMessageTime = conversation.lastMessageAt ?? conversation.updatedAt;
     
     String dateText;
     if (lastMessageTime.year == now.year) {
@@ -93,6 +113,9 @@ class MessagesScreen extends ConsumerWidget {
     } else {
       dateText = yearFormat.format(lastMessageTime);
     }
+
+    final lastMessageText = conversation.lastMessage?.content ?? 'Chưa có tin nhắn';
+    final unreadCount = conversation.unreadCount;
 
     return InkWell(
       onTap: () {
@@ -112,12 +135,12 @@ class MessagesScreen extends ConsumerWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: _getAvatarColor(seller.name),
+                color: _getAvatarColor(otherParty.fullName),
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Text(
-                  _getInitials(seller.name),
+                  _getInitials(otherParty.fullName),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -132,22 +155,46 @@ class MessagesScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    seller.username,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black87,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          otherParty.fullName,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (unreadCount > 0) ...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            unreadCount > 99 ? '99+' : unreadCount.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    conversation.lastMessage,
+                    lastMessageText,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey[600],
+                      color: unreadCount > 0 ? Colors.black87 : Colors.grey[600],
+                      fontWeight: unreadCount > 0 ? FontWeight.w500 : FontWeight.normal,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

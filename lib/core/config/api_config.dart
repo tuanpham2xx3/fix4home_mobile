@@ -19,5 +19,38 @@ class ApiConfig {
   static const String bookingsEndpoint = '/api/v1/bookings';
   static String bookingByIdEndpoint(int id) => '/api/v1/bookings/$id';
   static String cancelBookingEndpoint(int id) => '/api/v1/bookings/$id/cancel';
+
+  // Chat & message endpoints
+  static const String conversationsEndpoint = '/api/v1/chat/conversations';
+  static const String conversationsPaginatedEndpoint =
+      '/api/v1/chat/conversations/paginated';
+  static String conversationByIdEndpoint(int id) =>
+      '/api/v1/chat/conversations/$id';
+  static const String findOrCreateConversationEndpoint =
+      '/api/v1/chat/conversations/find-or-create';
+  static String archiveConversationEndpoint(int id) =>
+      '/api/v1/chat/conversations/$id/archive';
+
+  static String messagesEndpoint(int conversationId) =>
+      '/api/v1/chat/conversations/$conversationId/messages';
+  static String messagesBeforeEndpoint(int conversationId) =>
+      '/api/v1/chat/conversations/$conversationId/messages/before';
+  static const String markMessagesReadEndpoint =
+      '/api/v1/chat/messages/mark-read';
+  static const String unreadMessagesEndpoint =
+      '/api/v1/chat/messages/unread';
+
+  // Chatbot endpoint
+  static const String chatbotSendEndpoint = '/api/v1/chatbot/send';
+
+  // WebSocket
+  static const String webSocketPathNative = '/ws-native';
+  
+  /// Get WebSocket URL for native clients
+  static String getWebSocketUrl() {
+    // Convert http:// to ws://
+    final wsBaseUrl = baseUrl.replaceFirst('http://', 'ws://');
+    return '$wsBaseUrl$webSocketPathNative';
+  }
 }
 
