@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/widgets/gradient_header.dart';
 
 class BookingSuccessScreen extends StatelessWidget {
   const BookingSuccessScreen({super.key});
@@ -11,22 +12,9 @@ class BookingSuccessScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Yellow Header
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFC107),
-              ),
-              child: const Text(
-                'Đặt lịch thành công',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.center,
-              ),
+            // Yellow gradient header
+            GradientHeader(
+              title: 'Đặt lịch thành công',
             ),
             // Main Content Area
             Expanded(

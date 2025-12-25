@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../data/services/menu_service.dart';
 import '../../../domain/models/menu_item.dart';
+import '../../../core/widgets/gradient_header.dart';
 
 final menuServiceProvider = Provider<MenuService>((ref) => MenuService());
 
@@ -31,13 +32,16 @@ class ServiceMenuScreen extends ConsumerWidget {
     final menuItemAsync = ref.watch(menuItemProvider(serviceKey));
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(serviceTitle),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
       backgroundColor: Colors.white,
-      body: menuItemAsync.when(
+      body: SafeArea(
+        child: Column(
+          children: [
+            GradientHeader(
+              title: serviceTitle,
+              showBackButton: true,
+            ),
+            Expanded(
+              child: menuItemAsync.when(
         data: (menuItem) {
           if (menuItem == null) {
             return const Center(
@@ -86,6 +90,10 @@ class ServiceMenuScreen extends ConsumerWidget {
               ),
             ],
           ),
+        ),
+              ),
+            ),
+          ],
         ),
       ),
     );

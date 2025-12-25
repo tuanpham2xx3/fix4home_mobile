@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../data/services/address_service.dart';
 import '../../../domain/models/booking.dart';
 import '../application/booking_provider.dart';
+import '../../../core/widgets/gradient_header.dart';
 
 // Riverpod providers for address service
 final addressServiceProvider = Provider<AddressService>((ref) => AddressService());
@@ -349,40 +350,10 @@ class _QuickBookingScreenState extends ConsumerState<QuickBookingScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Yellow Header
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFC107),
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.arrow_back, color: Colors.black87),
-                    ),
-                    onPressed: () => context.pop(),
-                  ),
-                  const Expanded(
-                    child: Text(
-                      'Đặt lịch nhanh chóng',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(width: 48), // Balance the back button
-                ],
-              ),
+            // Yellow Gradient Header
+            GradientHeader(
+              title: 'Đặt lịch nhanh chóng',
+              showBackButton: true,
             ),
             // Form Content
             Expanded(
