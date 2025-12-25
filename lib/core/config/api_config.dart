@@ -19,5 +19,10 @@ class ApiConfig {
   static const String bookingsEndpoint = '/api/v1/bookings';
   static String bookingByIdEndpoint(int id) => '/api/v1/bookings/$id';
   static String cancelBookingEndpoint(int id) => '/api/v1/bookings/$id/cancel';
+  
+  // Chatbot endpoints
+  static const String chatbotSendEndpoint = '/api/v1/chatbot/send';
+  static const String chatbotHistoryEndpoint = '/api/v1/chatbot/history';
+  static String chatbotSessionHistoryEndpoint(String sessionId) => '/api/v1/chatbot/history/$sessionId';
 }
 

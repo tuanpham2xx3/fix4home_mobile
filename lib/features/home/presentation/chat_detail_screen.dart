@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../application/message_provider.dart';
+import '../application/chatbot_state.dart';
 import '../../../domain/models/message.dart';
 import '../../../domain/models/conversation.dart';
 import '../../../data/services/message_service.dart';
+import '../../../core/widgets/typing_indicator.dart';
 
 class ChatDetailScreen extends ConsumerStatefulWidget {
   final String conversationId;
@@ -66,29 +68,74 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     if (content.isEmpty) return;
 
     _messageController.clear();
-    final notifier = ref.read(messageNotifierProvider(widget.conversationId).notifier);
-    await notifier.sendMessage(content);
+    
+    if (widget.conversationId == 'chatbot') {
+      // Use chatbot notifier
+      final notifier = ref.read(chatbotNotifierProvider.notifier);
+      await notifier.sendMessage(content);
+    } else {
+      // Use regular message notifier
+      final notifier = ref.read(messageNotifierProvider(widget.conversationId).notifier);
+      await notifier.sendMessage(content);
+    }
+    
     // Reset flag so we scroll after sending
     _hasScrolledToBottom = false;
     _scrollToBottom();
   }
 
+  Future<void> _retryLastMessage() async {
+    if (widget.conversationId == 'chatbot') {
+      final notifier = ref.read(chatbotNotifierProvider.notifier);
+      await notifier.retryLastMessage();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final messagesAsync = ref.watch(messageNotifierProvider(widget.conversationId));
+    final isChatbot = widget.conversationId == 'chatbot';
+    
+    // Watch appropriate provider based on conversation type
+    final chatbotState = isChatbot ? ref.watch(chatbotNotifierProvider) : null;
+    final messagesAsync = isChatbot 
+        ? chatbotState!.messages 
+        : ref.watch(messageNotifierProvider(widget.conversationId));
 
-    // Scroll to bottom when messages are first loaded
-    ref.listen<AsyncValue<List<Message>>>(
-      messageNotifierProvider(widget.conversationId),
-      (previous, next) {
-        if (!_hasScrolledToBottom && next.hasValue && next.value!.isNotEmpty) {
-          _hasScrolledToBottom = true;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _scrollToBottom();
-          });
-        }
-      },
-    );
+    // Scroll to bottom when messages are first loaded or typing indicator appears
+    if (isChatbot) {
+      ref.listen<ChatbotState>(
+        chatbotNotifierProvider,
+        (previous, next) {
+          final shouldScroll = (next.messages.hasValue && 
+              (next.messages.value?.isNotEmpty ?? false)) || 
+              next.isTyping;
+          if (!_hasScrolledToBottom && shouldScroll) {
+            _hasScrolledToBottom = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _scrollToBottom();
+            });
+          }
+          // Also scroll when typing starts
+          if (next.isTyping && !(previous?.isTyping ?? false)) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _scrollToBottom();
+            });
+          }
+        },
+      );
+    } else {
+      ref.listen<AsyncValue<List<Message>>>(
+        messageNotifierProvider(widget.conversationId),
+        (previous, next) {
+          if (!_hasScrolledToBottom && next.hasValue && next.value!.isNotEmpty) {
+            _hasScrolledToBottom = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _scrollToBottom();
+            });
+          }
+        },
+      );
+    }
 
     if (_conversation == null) {
       return Scaffold(
@@ -160,7 +207,31 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
           Expanded(
             child: messagesAsync.when(
               data: (messages) {
-                if (messages.isEmpty) {
+                if (messages.isEmpty && !(isChatbot && (chatbotState?.isTyping ?? false))) {
+                  // Show error with retry if chatbot and there's an error
+                  if (isChatbot && chatbotState != null && chatbotState!.lastError != null) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Có lỗi xảy ra',
+                            style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            onPressed: _retryLastMessage,
+                            icon: const Icon(Icons.refresh),
+                            label: const Text('Thử lại'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF4CAF50),
+                              foregroundColor: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                   return Center(
                     child: Text(
                       'Chưa có tin nhắn',
@@ -171,19 +242,97 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                 return ListView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.all(16),
-                  itemCount: messages.length,
+                  itemCount: messages.length + (isChatbot && (chatbotState?.isTyping ?? false) ? 1 : 0),
                   itemBuilder: (context, index) {
+                    // Show typing indicator as last item if typing
+                    if (isChatbot && (chatbotState?.isTyping ?? false) && index == messages.length) {
+                      return const TypingIndicator();
+                    }
                     return _buildMessageBubble(messages[index]);
                   },
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(
-                child: Text(
-                  'Có lỗi xảy ra',
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-              ),
+              error: (error, stack) {
+                // For chatbot, show error with retry button
+                if (isChatbot && chatbotState != null && chatbotState!.lastFailedMessage != null) {
+                  final messages = chatbotState!.messages.value ?? [];
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: messages.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Có lỗi xảy ra: ${error.toString().replaceFirst('Exception: ', '')}',
+                                      style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    ElevatedButton.icon(
+                                      onPressed: _retryLastMessage,
+                                      icon: const Icon(Icons.refresh),
+                                      label: const Text('Thử lại'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFF4CAF50),
+                                        foregroundColor: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : ListView.builder(
+                                controller: _scrollController,
+                                padding: const EdgeInsets.all(16),
+                                itemCount: messages.length + ((chatbotState?.isTyping ?? false) ? 1 : 0),
+                                itemBuilder: (context, index) {
+                                  if ((chatbotState?.isTyping ?? false) && index == messages.length) {
+                                    return const TypingIndicator();
+                                  }
+                                  return _buildMessageBubble(messages[index]);
+                                },
+                              ),
+                      ),
+                      // Show error banner at bottom if there are messages
+                      if (messages.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          color: Colors.red[50],
+                          child: Row(
+                            children: [
+                              Icon(Icons.error_outline, color: Colors.red[700], size: 20),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Gửi tin nhắn thất bại',
+                                  style: TextStyle(color: Colors.red[700], fontSize: 14),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: _retryLastMessage,
+                                child: const Text('Thử lại', style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  );
+                }
+                // For non-chatbot, show simple error
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Có lỗi xảy ra',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
           // Input area
@@ -237,7 +386,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.arrow_upward, color: Colors.white, size: 20),
-                      onPressed: _sendMessage,
+                      onPressed: (isChatbot && (chatbotState?.isTyping ?? false)) ? null : _sendMessage,
                       padding: EdgeInsets.zero,
                     ),
                   ),
