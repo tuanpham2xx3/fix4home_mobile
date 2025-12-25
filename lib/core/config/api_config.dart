@@ -24,5 +24,11 @@ class ApiConfig {
   static const String chatbotSendEndpoint = '/api/v1/chatbot/send';
   static const String chatbotHistoryEndpoint = '/api/v1/chatbot/history';
   static String chatbotSessionHistoryEndpoint(String sessionId) => '/api/v1/chatbot/history/$sessionId';
+  
+  // Article endpoints
+  static const String articlesEndpoint = '/api/v1/articles';
+  static String articleByIdEndpoint(int id) => '/api/v1/articles/$id';
+  static String articleBySlugEndpoint(String slug) => '/api/v1/articles/slug/$slug';
+  static const String articlesSearchEndpoint = '/api/v1/articles/search';
 }
 

@@ -6,9 +6,10 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/widgets/gradient_header.dart';
 import '../../../domain/models/news_article.dart';
 import '../../../data/services/news_service.dart';
+import 'news_list_screen.dart'; // Import to use newsServiceProvider
 
 final newsDetailProvider = FutureProvider.family<NewsArticle?, String>((ref, id) async {
-  final service = NewsService();
+  final service = ref.watch(newsServiceProvider);
   return service.getNewsById(id);
 });
 
@@ -96,18 +97,45 @@ class NewsDetailScreen extends ConsumerWidget {
   Widget _buildHeroImage(String imagePath) {
     return AspectRatio(
       aspectRatio: 16 / 9,
-      child: Image.asset(
-        imagePath,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: Icon(Icons.image_not_supported, size: 48, color: Colors.grey),
+      child: imagePath.startsWith('http')
+          ? Image.network(
+              imagePath,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  color: Colors.grey[200],
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!
+                          : null,
+                    ),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: Icon(Icons.image_not_supported, size: 48, color: Colors.grey),
+                  ),
+                );
+              },
+            )
+          : Image.asset(
+              imagePath,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: Icon(Icons.image_not_supported, size: 48, color: Colors.grey),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 

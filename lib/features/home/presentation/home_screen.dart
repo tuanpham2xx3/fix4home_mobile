@@ -6,6 +6,16 @@ import 'service_menu_screen.dart';
 import 'search_screen.dart';
 import 'membership_screen.dart';
 import 'main_navigation.dart';
+import '../../../domain/models/news_article.dart';
+import 'news_list_screen.dart';
+
+// Provider for featured articles (first 3 articles)
+final featuredArticlesProvider = FutureProvider<List<NewsArticle>>((ref) async {
+  final service = ref.watch(newsServiceProvider);
+  final allArticles = await service.getAllNews();
+  // Return first 3 articles, or all if less than 3
+  return allArticles.take(3).toList();
+});
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -26,6 +36,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Timer? _promoTimer;
   Timer? _servicesTimer;
   Timer? _articlesTimer;
+  Timer? _articlesRefreshTimer; // Timer for refreshing articles
   
   // Current page indices
   int _promoCurrentPage = 0;
@@ -41,6 +52,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     'assets/banners/van_chuyen.png',
     'assets/banners/ve_sinh.png',
   ];
+  
+  // Reversed banner list for Services Commerce section (different order)
+  List<String> get _reversedBanners => _banners.reversed.toList();
 
   @override
   void initState() {
@@ -50,6 +64,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _articlesPageController = PageController(viewportFraction: 0.8, initialPage: 0);
     
     _startAutoScroll();
+    _startArticlesRefresh();
+  }
+
+  void _startArticlesRefresh() {
+    // Refresh articles every 5 seconds
+    _articlesRefreshTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (mounted) {
+        ref.refresh(featuredArticlesProvider);
+      }
+    });
   }
 
   void _openServiceBottomSheet(BuildContext context, String serviceKey, String title) {
@@ -84,7 +108,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Auto-scroll for services section
     _servicesTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
       if (_servicesPageController.hasClients) {
-        _servicesCurrentPage = (_servicesCurrentPage + 1) % _banners.length;
+        _servicesCurrentPage = (_servicesCurrentPage + 1) % _reversedBanners.length;
         _servicesPageController.nextPage(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
@@ -120,6 +144,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _promoTimer?.cancel();
     _servicesTimer?.cancel();
     _articlesTimer?.cancel();
+    _articlesRefreshTimer?.cancel();
     _promoPageController.dispose();
     _servicesPageController.dispose();
     _articlesPageController.dispose();
@@ -577,13 +602,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               controller: _servicesPageController,
               onPageChanged: (index) {
                 setState(() {
-                  _servicesCurrentPage = index % _banners.length;
+                  _servicesCurrentPage = index % _reversedBanners.length;
                 });
               },
-              itemCount: _banners.length * 100, // Infinite scroll
+              itemCount: _reversedBanners.length * 100, // Infinite scroll
               itemBuilder: (context, index) {
-                final bannerIndex = index % _banners.length;
-                return _buildCarouselItem(_banners[bannerIndex], _servicesPageController, index.toDouble());
+                final bannerIndex = index % _reversedBanners.length;
+                return _buildCarouselItem(_reversedBanners[bannerIndex], _servicesPageController, index.toDouble());
               },
             ),
           ),
@@ -593,6 +618,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildFeaturedArticlesSection() {
+    final articlesAsync = ref.watch(featuredArticlesProvider);
+    
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
@@ -610,20 +637,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
           const SizedBox(height: 15),
-          SizedBox(
-            height: 200,
-            child: PageView.builder(
-              controller: _articlesPageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _articlesCurrentPage = index % 3;
-                });
-              },
-              itemCount: 3 * 100, // Infinite scroll
-              itemBuilder: (context, index) {
-                final articleIndex = index % 3;
-                return _buildArticleCarouselItem(_articlesPageController, index.toDouble(), articleIndex);
-              },
+          articlesAsync.when(
+            data: (articles) {
+              if (articles.isEmpty) {
+                return const SizedBox(
+                  height: 200,
+                  child: Center(child: Text('Chưa có bài viết')),
+                );
+              }
+              
+              final articleCount = articles.length;
+              return SizedBox(
+                height: 200,
+                child: PageView.builder(
+                  controller: _articlesPageController,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _articlesCurrentPage = index % articleCount;
+                    });
+                  },
+                  itemCount: articleCount * 100, // Infinite scroll
+                  itemBuilder: (context, index) {
+                    final articleIndex = index % articleCount;
+                    final article = articles[articleIndex];
+                    return _buildArticleCarouselItem(_articlesPageController, index.toDouble(), article);
+                  },
+                ),
+              );
+            },
+            loading: () => const SizedBox(
+              height: 200,
+              child: Center(child: CircularProgressIndicator()),
+            ),
+            error: (error, stack) => SizedBox(
+              height: 200,
+              child: Center(
+                child: Text(
+                  'Lỗi tải bài viết',
+                  style: TextStyle(color: Colors.red[700]),
+                ),
+              ),
             ),
           ),
         ],
@@ -678,32 +731,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           alignment: Alignment.center,
           child: Opacity(
             opacity: opacity,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withValues(alpha: 0.2 * opacity),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: const Offset(0, 2),
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to quick booking with empty service name
+                context.push('/quick-booking');
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withValues(alpha: 0.2 * opacity),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[300],
+                        child: const Center(
+                          child: Icon(Icons.error, color: Colors.red),
+                        ),
+                      );
+                    },
                   ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  imagePath,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[300],
-                      child: const Center(
-                        child: Icon(Icons.error, color: Colors.red),
-                      ),
-                    );
-                  },
                 ),
               ),
             ),
@@ -713,7 +772,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildArticleCarouselItem(PageController controller, double index, int articleIndex) {
+  Widget _buildArticleCarouselItem(PageController controller, double index, NewsArticle article) {
     return AnimatedBuilder(
       animation: controller,
       builder: (context, child) {
@@ -721,12 +780,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
-              color: articleIndex == 1 ? const Color(0xFFFFC107) : const Color(0xFF2196F3),
+              color: const Color(0xFF2196F3),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text('Loading...'),
+            child: const Center(
+              child: CircularProgressIndicator(color: Colors.white),
             ),
           );
         }
@@ -757,76 +815,180 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           scale: scale,
           child: Opacity(
             opacity: opacity,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(
-                color: articleIndex == 1 ? const Color(0xFFFFC107) : const Color(0xFF2196F3),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withValues(alpha: 0.2 * opacity),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Text(
-                        'FIX4HOME',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      articleIndex == 1 
-                        ? 'DỊCH VỤ ĐIỆN NƯỚC'
-                        : 'DỊCH VỤ CƠ KHÍ',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    if (articleIndex == 1) ...[
-                      const Text(
-                        '• Hệ thống điện - nước',
-                        style: TextStyle(fontSize: 12, color: Colors.white70),
-                      ),
-                      const Text(
-                        '• Hệ thống mạng, camera',
-                        style: TextStyle(fontSize: 12, color: Colors.white70),
-                      ),
-                      const Text(
-                        '• Hệ thống thiết bị NLMT',
-                        style: TextStyle(fontSize: 12, color: Colors.white70),
-                      ),
-                    ],
-                    const Spacer(),
-                    const Text(
-                      '1800 812',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+            child: GestureDetector(
+              onTap: () {
+                context.push('/news/${article.id}');
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withValues(alpha: 0.2 * opacity),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: const Offset(0, 2),
                     ),
                   ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: article.imageUrl.isNotEmpty && article.imageUrl.startsWith('http')
+                      ? Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            // Hero image background
+                            Image.network(
+                              article.imageUrl,
+                              fit: BoxFit.cover,
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Container(
+                                  color: const Color(0xFF2196F3),
+                                  child: const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                // Fallback to blue background if image fails
+                                return Container(color: const Color(0xFF2196F3));
+                              },
+                            ),
+                            // Gradient overlay for better text readability
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.black.withOpacity(0.3),
+                                    Colors.black.withOpacity(0.7),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            // Content
+                            Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: const Text(
+                                      'FIX4HOME',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    article.title,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  if (article.shortDescription.isNotEmpty)
+                                    Text(
+                                      article.shortDescription,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white70,
+                                      ),
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  const Spacer(),
+                                  if (article.phoneNumber.isNotEmpty)
+                                    Text(
+                                      article.phoneNumber,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      : // Fallback if no image URL
+                        Container(
+                          color: const Color(0xFF2196F3),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Text(
+                                    'FIX4HOME',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  article.title,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 8),
+                                if (article.shortDescription.isNotEmpty)
+                                  Text(
+                                    article.shortDescription,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.white70,
+                                    ),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                const Spacer(),
+                                if (article.phoneNumber.isNotEmpty)
+                                  Text(
+                                    article.phoneNumber,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
                 ),
               ),
             ),

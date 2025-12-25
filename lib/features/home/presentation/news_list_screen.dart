@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,8 +6,19 @@ import 'package:go_router/go_router.dart';
 import '../../../core/widgets/gradient_header.dart';
 import '../../../data/services/news_service.dart';
 import '../../../domain/models/news_article.dart';
+import '../../../domain/repositories/article_repository.dart';
+import '../../../data/repositories/api_article_repository.dart';
+import '../../../core/services/api_client.dart';
 
-final newsServiceProvider = Provider<NewsService>((ref) => NewsService());
+final articleRepositoryProvider = Provider<ArticleRepository>((ref) {
+  final dio = ref.watch(dioProvider);
+  return ApiArticleRepository(dio);
+});
+
+final newsServiceProvider = Provider<NewsService>((ref) {
+  final repository = ref.watch(articleRepositoryProvider);
+  return NewsService(repository);
+});
 
 final newsQueryProvider = StateProvider<String>((ref) => '');
 
@@ -28,10 +40,27 @@ class NewsListScreen extends ConsumerStatefulWidget {
 
 class _NewsListScreenState extends ConsumerState<NewsListScreen> {
   final TextEditingController _searchController = TextEditingController();
+  Timer? _refreshTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startRefreshTimer();
+  }
+
+  void _startRefreshTimer() {
+    // Refresh news every 5 seconds
+    _refreshTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (mounted) {
+        ref.refresh(filteredNewsProvider);
+      }
+    });
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _refreshTimer?.cancel();
     super.dispose();
   }
 
@@ -197,13 +226,27 @@ class _NewsThumbnail extends StatelessWidget {
         width: 110,
         height: 110,
         color: Colors.grey[200],
-        child: Image.asset(
-          imagePath,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return const Icon(Icons.image_not_supported, color: Colors.grey);
-          },
-        ),
+        child: imagePath.startsWith('http')
+            ? Image.network(
+                imagePath,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.image_not_supported, color: Colors.grey);
+                },
+              )
+            : Image.asset(
+                imagePath,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.image_not_supported, color: Colors.grey);
+                },
+              ),
       ),
     );
   }
