@@ -30,5 +30,18 @@ class ApiConfig {
   static String articleByIdEndpoint(int id) => '/api/v1/articles/$id';
   static String articleBySlugEndpoint(String slug) => '/api/v1/articles/slug/$slug';
   static const String articlesSearchEndpoint = '/api/v1/articles/search';
+  
+  // Notification endpoints
+  static const String notificationsMyEndpoint = '/api/v1/notifications/my';
+  static const String notificationsUnreadCountEndpoint = '/api/v1/notifications/unread-count';
+  static String notificationByIdEndpoint(int id) => '/api/v1/notifications/$id';
+  static String notificationMarkReadEndpoint(int id) => '/api/v1/notifications/$id/read';
+  static const String notificationsMarkAllReadEndpoint = '/api/v1/notifications/mark-all-read';
+  static const String notificationsMarkEndpoint = '/api/v1/notifications/mark';
+  static String notificationDeleteEndpoint(int id) => '/api/v1/notifications/$id';
+  static const String notificationsDeleteReadEndpoint = '/api/v1/notifications/read';
+  static const String notificationsSearchEndpoint = '/api/v1/notifications/search';
+  static const String notificationsRecentEndpoint = '/api/v1/notifications/recent';
+  static const String notificationsStatsEndpoint = '/api/v1/notifications/stats';
 }
 

@@ -74,7 +74,7 @@ class _NewsListScreenState extends ConsumerState<NewsListScreen> {
         child: Column(
           children: [
             const GradientHeader(
-              title: 'Tin tức Thợ Việt',
+              title: 'Tin tức',
               showBackButton: true,
             ),
             Padding(

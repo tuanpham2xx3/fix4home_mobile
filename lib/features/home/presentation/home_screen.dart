@@ -277,18 +277,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               const Spacer(),
               // Notification Icon
-              _buildIconWithBadge(
+              _buildIconButton(
                 icon: Icons.notifications_outlined,
-                badgeCount: '38',
                 onPressed: () {
                   context.push('/notifications');
                 },
               ),
               const SizedBox(width: 8),
               // Message Icon
-              _buildIconWithBadge(
+              _buildIconButton(
                 icon: Icons.message_outlined,
-                badgeCount: '38',
                 onPressed: () {
                   // Chuyển sang màn hình tin nhắn (index 2)
                   ref.read(selectedIndexProvider.notifier).state = 2;
@@ -324,59 +322,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildIconWithBadge({
+  Widget _buildIconButton({
     required IconData icon,
-    required String badgeCount,
     required VoidCallback onPressed,
   }) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.2),
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
-          child: IconButton(
-            icon: Icon(icon, size: 28, color: Colors.black87),
-            onPressed: onPressed,
-            padding: EdgeInsets.zero,
-          ),
-        ),
-        Positioned(
-          right: 4,
-          top: 4,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: const BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle,
-            ),
-            constraints: const BoxConstraints(
-              minWidth: 20,
-              minHeight: 20,
-            ),
-            child: Text(
-              badgeCount,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, size: 28, color: Colors.black87),
+        onPressed: onPressed,
+        padding: EdgeInsets.zero,
+      ),
     );
   }
 

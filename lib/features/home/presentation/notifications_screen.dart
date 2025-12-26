@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,8 +7,25 @@ import 'package:intl/intl.dart';
 import '../../../core/widgets/gradient_header.dart';
 import '../../../data/services/notification_service.dart';
 import '../../../domain/models/notification_item.dart';
+import '../../../domain/repositories/notification_repository.dart';
+import '../../../data/repositories/api_notification_repository.dart';
+import '../../../core/services/api_client.dart';
+import 'main_navigation.dart';
 
-final notificationServiceProvider = Provider<NotificationService>((ref) => NotificationService());
+final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
+  final dio = ref.watch(dioProvider);
+  return ApiNotificationRepository(dio);
+});
+
+final notificationServiceProvider = Provider<NotificationService>((ref) {
+  final repository = ref.watch(notificationRepositoryProvider);
+  return NotificationService(repository);
+});
+
+final unreadCountProvider = FutureProvider<int>((ref) async {
+  final service = ref.watch(notificationServiceProvider);
+  return service.getUnreadCount();
+});
 
 final notificationsProvider = FutureProvider<List<NotificationItem>>((ref) async {
   final service = ref.watch(notificationServiceProvider);
@@ -22,6 +40,25 @@ class NotificationsScreen extends ConsumerStatefulWidget {
 }
 
 class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
+  Timer? _refreshTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-refresh unread count every 30 seconds
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      if (mounted) {
+        ref.refresh(unreadCountProvider);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final notificationsAsync = ref.watch(notificationsProvider);
@@ -37,24 +74,31 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               actions: [
                 Consumer(
                   builder: (context, ref, _) {
-                    final service = ref.watch(notificationServiceProvider);
-                    final unreadCount = service.unreadCount;
-                    if (unreadCount == 0) {
-                      return const SizedBox.shrink();
-                    }
-                    return TextButton(
-                      onPressed: () async {
-                        await service.markAllAsRead();
-                        ref.invalidate(notificationsProvider);
+                    final unreadCountAsync = ref.watch(unreadCountProvider);
+                    return unreadCountAsync.when(
+                      data: (unreadCount) {
+                        if (unreadCount == 0) {
+                          return const SizedBox.shrink();
+                        }
+                        return TextButton(
+                          onPressed: () async {
+                            final service = ref.read(notificationServiceProvider);
+                            await service.markAllAsRead();
+                            ref.invalidate(notificationsProvider);
+                            ref.invalidate(unreadCountProvider);
+                          },
+                          child: const Text(
+                            'Đọc tất cả',
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
                       },
-                      child: const Text(
-                        'Đọc tất cả',
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      loading: () => const SizedBox.shrink(),
+                      error: (_, __) => const SizedBox.shrink(),
                     );
                   },
                 ),
@@ -88,6 +132,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   return RefreshIndicator(
                     onRefresh: () async {
                       ref.invalidate(notificationsProvider);
+                      ref.invalidate(unreadCountProvider);
+                      // Wait for refresh to complete
+                      try {
+                        await ref.read(notificationsProvider.future);
+                        await ref.read(unreadCountProvider.future);
+                      } catch (_) {
+                        // Ignore errors during refresh
+                      }
                     },
                     child: ListView.separated(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
@@ -95,15 +147,29 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                         final notification = notifications[index];
                         return _NotificationCard(
                           notification: notification,
-                          onTap: () {
+                          onTap: () async {
+                            // Handle navigation based on actionUrl
                             if (notification.actionUrl != null) {
-                              context.push(notification.actionUrl!);
+                              if (notification.actionUrl == '/bookings') {
+                                // Navigate to bookings screen (index 1 in MainNavigation)
+                                ref.read(selectedIndexProvider.notifier).state = 1;
+                                // Go back to home if we're not already there
+                                if (context.canPop()) {
+                                  context.pop();
+                                } else {
+                                  context.go('/home');
+                                }
+                              } else {
+                                // For other actionUrls, use push navigation
+                                context.push(notification.actionUrl!);
+                              }
                             }
                             if (!notification.isRead) {
-                              ref
+                              await ref
                                   .read(notificationServiceProvider)
                                   .markAsRead(notification.id);
                               ref.invalidate(notificationsProvider);
+                              ref.invalidate(unreadCountProvider);
                             }
                           },
                           onDelete: () async {
@@ -111,6 +177,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                                 .read(notificationServiceProvider)
                                 .deleteNotification(notification.id);
                             ref.invalidate(notificationsProvider);
+                            ref.invalidate(unreadCountProvider);
                           },
                         );
                       },
@@ -201,7 +268,7 @@ class _NotificationCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: notification.isRead
                       ? Colors.grey[200]
-                      : const Color(0xFFFFC107).withOpacity(0.2),
+                      : const Color(0xFFFFC107).withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
